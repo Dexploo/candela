@@ -5,30 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Candela</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='white'/%3E%3Cg fill='none' stroke='%236B6399' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 8L6 18v34a5 5 0 0 0 5 5h42a5 5 0 0 0 5-5V18l-8-10z'/%3E%3Cline x1='6' y1='18' x2='58' y2='18'/%3E%3Cpath d='M42 28a10 10 0 0 1-20 0'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='white'/%3E%3Cg fill='none' stroke='%231A1A1A' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 8L6 18v34a5 5 0 0 0 5 5h42a5 5 0 0 0 5-5V18l-8-10z'/%3E%3Cline x1='6' y1='18' x2='58' y2='18'/%3E%3Cpath d='M42 28a10 10 0 0 1-20 0'/%3E%3C/g%3E%3C/svg%3E">
 <style>
 :root{
-  --lila:#6B6399;--lila-dark:#524D77;--lila-light:#ECEAF4;--lila-border:#B8B5D0;
-  --bg:#f2f2f0;--white:#fff;--black:#2E2E2E;--text:#2E2E2E;--muted:#6b6b6b;
+  --lila:#3B2F8F;--lila-dark:#2E2470;--lila-light:#ECEAFC;--lila-border:#9B93E8;
+  --bg:#F0F0F5;--white:#fff;--black:#1A1A1A;--text:#1A1A1A;--muted:#555;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:15px}
-.app{max-width:720px;margin:0 auto;padding:0 0 80px}
+.app{width:100%}
+.content-wrap{max-width:800px;margin:0 auto;padding:0 0 80px}
 
 /* HEADER */
-.header{background:var(--lila);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.header{background:#1A1A1A;padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;width:100%}
 .logo-circle{width:42px;height:42px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .header-title{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;letter-spacing:0.5px;color:#fff}
 
 /* NAV */
-.nav{display:flex;background:var(--lila-dark)}
+.nav{display:flex;background:#333;width:100%}
 .nav button{flex:1;padding:12px 4px;font-size:13px;font-family:'Poppins',sans-serif;border:none;background:none;color:rgba(255,255,255,0.5);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-weight:600;transition:all 0.15s}
 .nav button.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,0.1)}
 .nav button:hover:not(.active){color:#fff;background:rgba(255,255,255,0.07)}
 
 /* SECTIONS */
-.section{padding:16px;display:none}
+.section{display:none}
 .section.active{display:block}
+.section{padding:20px 24px 80px}
+
+/* On larger screens, center content */
+@media(min-width:860px){
+  .section{padding:24px calc((100% - 800px)/2) 80px}
+  .header{padding:14px calc((100% - 800px)/2 + 0px)}
+  .nav{padding:0 calc((100% - 800px)/2)}
+  .nav button{flex:none;padding:12px 28px}
+}
 
 /* CARDS */
 .card{background:var(--white);border:1px solid #e0e0e0;border-radius:14px;padding:14px 16px;margin-bottom:12px}
@@ -52,15 +62,17 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);fon
 .btn.primary:hover{background:#333;border-color:#333}
 .btn.success{background:#16a34a;color:#fff;border-color:#16a34a}
 .btn.success:hover{background:#15803d}
-.btn.danger{background:#9b4444;color:#fff;border-color:#9b4444}
-.btn.danger:hover{background:#7a3333;border-color:#7a3333}
+.btn.danger{background:#D32F2F;color:#fff;border-color:#D32F2F}
+.btn.danger:hover{background:#b71c1c;border-color:#b71c1c;color:#fff}
 .btn.sm{padding:4px 12px;font-size:12px}
 .btn.outline-dark{border-color:#ccc;color:var(--black)}
 .btn.outline-dark:hover{background:#f0f0f0}
 
 /* TABLE */
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 12px;color:var(--muted);font-weight:600;border-bottom:1.5px solid #e8e8e8;font-size:12px;text-transform:uppercase;letter-spacing:0.4px}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+th{text-align:left;padding:10px 12px;color:#fff;font-weight:600;background:#1A1A1A;border-bottom:none;font-size:12px;text-transform:uppercase;letter-spacing:0.4px}
+th:first-child{border-radius:10px 0 0 0}
+th:last-child{border-radius:0 10px 0 0}
 td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafafa}
@@ -159,33 +171,33 @@ tr:hover td{background:#fafafa}
 <body>
 <!-- LOGIN -->
 <div id="login-screen" style="display:none;position:fixed;inset:0;background:#f5f5f5;z-index:999;display:flex;align-items:center;justify-content:center;padding:24px">
-  <div style="background:#fff;border:1.5px solid #e0e0e0;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;border-top:5px solid #6B6399">
+  <div style="background:#fff;border:1.5px solid #e0e0e0;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;border-top:5px solid #1A1A1A">
     <div style="text-align:center;margin-bottom:32px">
-      <div style="width:60px;height:60px;border-radius:50%;background:#6B6399;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+      <div style="width:60px;height:60px;border-radius:50%;background:#1A1A1A;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
       </div>
-      <div style="font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;color:#2E2E2E;letter-spacing:0.5px">CANDELA TIENDA</div>
+      <div style="font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;color:#1A1A1A;letter-spacing:0.5px">CANDELA TIENDA</div>
       <div style="font-size:13px;color:#888;margin-top:4px;font-family:'Poppins',sans-serif">Ingresa tu usuario y contraseña</div>
     </div>
     <div style="margin-bottom:14px">
       <label style="display:block;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-weight:600;font-family:'Poppins',sans-serif">Usuario</label>
       <input id="login-user" type="text" autocomplete="username"
-        style="width:100%;padding:11px 14px;font-size:15px;font-family:'Poppins',sans-serif;border:1.5px solid #ddd;border-radius:10px;outline:none;background:#fff;color:#2E2E2E;transition:border 0.15s"
+        style="width:100%;padding:11px 14px;font-size:15px;font-family:'Poppins',sans-serif;border:1.5px solid #ddd;border-radius:10px;outline:none;background:#fff;color:#1A1A1A;transition:border 0.15s"
         onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
     </div>
     <div style="margin-bottom:22px">
       <label style="display:block;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-weight:600;font-family:'Poppins',sans-serif">Contraseña</label>
       <input id="login-pass" type="password" autocomplete="current-password"
-        style="width:100%;padding:11px 14px;font-size:15px;font-family:'Poppins',sans-serif;border:1.5px solid #ddd;border-radius:10px;outline:none;background:#fff;color:#2E2E2E;transition:border 0.15s"
+        style="width:100%;padding:11px 14px;font-size:15px;font-family:'Poppins',sans-serif;border:1.5px solid #ddd;border-radius:10px;outline:none;background:#fff;color:#1A1A1A;transition:border 0.15s"
         onkeydown="if(event.key==='Enter')intentarLogin()">
     </div>
     <div id="login-error" style="display:none;color:#b91c1c;font-size:13px;margin-bottom:12px;text-align:center;font-family:'Poppins',sans-serif;background:#fee2e2;border-radius:8px;padding:8px">Usuario o contraseña incorrectos.</div>
     <button onclick="intentarLogin()"
-      style="width:100%;background:#2E2E2E;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.15s">
+      style="width:100%;background:#1A1A1A;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:background 0.15s">
       Ingresar
     </button>
   </div>
@@ -195,7 +207,7 @@ tr:hover td{background:#fafafa}
 
   <div class="header">
     <div class="logo-circle">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B6399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
         <line x1="3" y1="6" x2="21" y2="6"/>
         <path d="M16 10a4 4 0 0 1-8 0"/>
@@ -216,13 +228,13 @@ tr:hover td{background:#fafafa}
     <div class="metric-row" id="caja-metrics"></div>
 
     <!-- Accesos rápidos -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;justify-content:center">
-      <button class="btn primary" onclick="openModal('venta')" style="padding:12px 24px;font-size:15px">+ Nueva venta</button>
-      <button class="btn" onclick="openModal('cliente')" style="background:#4a7c59;color:#fff;border-color:#4a7c59;padding:12px 24px;font-size:15px">+ Nuevo cliente</button>
-      <button class="btn" onclick="openModal('gasto')" style="background:#9b4444;color:#fff;border-color:#9b4444;padding:12px 24px;font-size:15px">+ Registrar gasto</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="btn" onclick="openModal('venta')" style="background:#2e7d32;color:#fff;border-color:#2e7d32">+ Nueva venta</button>
+      <button class="btn" onclick="openModal('cliente')" style="background:#0D3B7A;color:#fff;border-color:#0D3B7A">+ Nuevo cliente</button>
+      <button class="btn" onclick="openModal('gasto')" style="background:#D32F2F;color:#fff;border-color:#D32F2F">+ Registrar gasto</button>
     </div>
 
-    <div class="section-title" style="color:#2E2E2E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">
+    <div class="section-title" style="color:#1A1A1A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">
       VENTAS DE HOY
     </div>
     <div class="card" style="padding:0;margin-bottom:24px">
@@ -230,7 +242,7 @@ tr:hover td{background:#fafafa}
       <tbody id="ventas-hoy-tbody"></tbody></table>
     </div>
 
-    <div class="section-title" style="margin-top:0;color:#2E2E2E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">HISTORIAL DE VENTAS</div>
+    <div class="section-title" style="margin-top:0;color:#1A1A1A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">HISTORIAL DE VENTAS</div>
     <div class="card" style="padding:0">
       <table><thead><tr><th>Fecha</th><th>Detalle</th><th>Monto</th><th>Tipo</th><th></th></tr></thead>
       <tbody id="ventas-hist-tbody"></tbody></table>
@@ -242,7 +254,7 @@ tr:hover td{background:#fafafa}
 
   <!-- PANEL TODAS LAS VENTAS -->
   <div class="section" id="sec-todas-ventas">
-    <div class="section-title" style="color:#2E2E2E;text-transform:uppercase;letter-spacing:0.5px">
+    <div class="section-title" style="color:#1A1A1A;text-transform:uppercase;letter-spacing:0.5px">
       TODAS LAS VENTAS
       <button class="btn" onclick="showSection('caja')">← Volver</button>
     </div>
@@ -359,6 +371,27 @@ tr:hover td{background:#fafafa}
   </div>
 </div>
 
+<!-- ===== MODAL EDITAR VENTA ===== -->
+<div class="modal-bg" id="modal-editar-venta">
+  <div class="modal">
+    <h2>Editar venta</h2>
+    <input type="hidden" id="ev-id">
+    <div class="field"><label>Detalle</label><input id="ev-detalle"></div>
+    <div class="field"><label>Monto ($)</label><input id="ev-monto" type="number" min="0"></div>
+    <div class="field"><label>Tipo de pago</label>
+      <select id="ev-tipo"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Fiado</option></select>
+    </div>
+    <div class="field"><label>Nota (opcional)</label><input id="ev-nota"></div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="eliminarVentaDesdeEditor()">Eliminar</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="closeModal('editar-venta')">Cancelar</button>
+        <button class="btn primary" onclick="guardarEdicionVenta()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODAL PRODUCTO ===== -->
 <div class="modal-bg" id="modal-producto">
   <div class="modal">
@@ -436,7 +469,36 @@ tr:hover td{background:#fafafa}
   </div>
 </div>
 
-<!-- ===== MODAL GASTO ===== -->
+<!-- ===== MODAL EXPORTAR PDF ===== -->
+<div class="modal-bg" id="modal-exportar-pdf">
+  <div class="modal">
+    <h2>Exportar comprobante</h2>
+    <input type="hidden" id="pdf-cliente-id">
+    <div class="field">
+      <label>¿Qué querés exportar?</label>
+      <div class="vtab-row" style="margin-bottom:0">
+        <button class="vtab active" id="pdf-tab-mes" onclick="setPdfTab('mes')">Por mes</button>
+        <button class="vtab" id="pdf-tab-sel" onclick="setPdfTab('sel')">Seleccionar compras</button>
+      </div>
+    </div>
+    <div id="pdf-content-mes">
+      <div class="field" style="margin-top:12px">
+        <label>Mes</label>
+        <select id="pdf-mes-sel"></select>
+      </div>
+    </div>
+    <div id="pdf-content-sel" style="display:none">
+      <div class="field" style="margin-top:12px">
+        <label>Seleccioná las compras</label>
+        <div id="pdf-compras-lista" style="max-height:220px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('exportar-pdf')">Cancelar</button>
+      <button class="btn primary" onclick="generarPDF()">Generar PDF</button>
+    </div>
+  </div>
+</div>
 <div class="modal-bg" id="modal-gasto">
   <div class="modal">
     <h2>Gasto</h2>
@@ -939,7 +1001,14 @@ function pagarTotal(cid){
   const c=db.clientes.find(x=>x.id===cid);if(!c||!c.deuda)return;
   const monto=c.deuda;c.deuda=0;
   if(!c.pagos)c.pagos=[];
-  c.pagos.push({fecha:hoy(),monto,nota:'Pago total'});
+  c.pagos.push({id:uid(),fecha:hoy(),monto,nota:'Pago total'});
+  save();render();
+}
+function deshacerPago(cid,pid){
+  const c=db.clientes.find(x=>x.id===cid);if(!c)return;
+  const pago=c.pagos.find(p=>p.id===pid);if(!pago)return;
+  c.deuda=(c.deuda||0)+pago.monto;
+  c.pagos=c.pagos.filter(p=>p.id!==pid);
   save();render();
 }
 function guardarPago(){
@@ -950,7 +1019,7 @@ function guardarPago(){
   if(c){
     c.deuda=Math.max(0,(c.deuda||0)-monto);
     if(!c.pagos)c.pagos=[];
-    c.pagos.push({fecha:hoy(),monto,nota:document.getElementById('pago-nota').value});
+    c.pagos.push({id:uid(),fecha:hoy(),monto,nota:document.getElementById('pago-nota').value});
   }
   save();render();closeModal('pago-fiado');
 }
@@ -977,13 +1046,13 @@ function render(){renderCaja();renderInventario();renderClientes();renderGastos(
 
 function tipoBadge(tipo){
   const estilos={
-    Efectivo: 'background:#4a7c59;color:#fff;border-color:#4a7c59',
-    Transferencia: 'background:#3a5a8a;color:#fff;border-color:#3a5a8a',
-    Tarjeta: 'background:#b06b20;color:#fff;border-color:#b06b20',
-    Fiado: 'background:#6B6399;color:#fff;border-color:#6B6399'
+    Efectivo:'background:#2e7d32;color:#fff',
+    Transferencia:'background:#1565C0;color:#fff',
+    Tarjeta:'background:#E65100;color:#fff',
+    Fiado:'background:#3B2F8F;color:#fff'
   };
-  const estilo=estilos[tipo]||'background:#2E2E2E;color:#fff;border-color:#2E2E2E';
-  return `<span class="badge" style="${estilo}">${tipo.toUpperCase()}</span>`;
+  const estilo=estilos[tipo]||'background:#555;color:#fff';
+  return `<span style="font-size:11px;font-weight:600;border-radius:6px;padding:4px 12px;display:inline-block;${estilo}">${tipo.toUpperCase()}</span>`;
 }
 
 function fmtDetalle(detalle){
@@ -997,8 +1066,8 @@ function renderCaja(){
   const totHoy=vhoy.reduce((s,v)=>s+v.total,0);
   const totMes=db.ventas.filter(v=>{const d=new Date(v.ts);return d.getMonth()===new Date().getMonth()&&d.getFullYear()===new Date().getFullYear();}).reduce((s,v)=>s+v.total,0);
   document.getElementById('caja-metrics').innerHTML=`
-    <div class="metric" style="background:#2E2E2E;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.6)">Ventas de hoy</div><div class="metric-val" style="color:#fff">${fmt(totHoy)}</div></div>
-    <div class="metric" style="background:#6B6399;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Ventas del mes</div><div class="metric-val" style="color:#fff">${fmt(totMes)}</div></div>`;
+    <div class="metric" style="background:#1A1A1A;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.6)">Ventas de hoy</div><div class="metric-val" style="color:#fff">${fmt(totHoy)}</div></div>
+    <div class="metric" style="background:#fff;border:1.5px solid #ddd"><div class="metric-label" style="color:#555">Ventas del mes</div><div class="metric-val" style="color:#1A1A1A">${fmt(totMes)}</div></div>`;
   const tb=document.getElementById('ventas-hoy-tbody');
   const ventasHoyRev=vhoy.slice().reverse();
   tb.innerHTML=ventasHoyRev.length?ventasHoyRev.map(v=>{
@@ -1041,6 +1110,28 @@ function verTodasVentas(){
   showSection('todas-ventas');
 }
 
+function guardarEdicionVenta(){
+  const idx=parseInt(document.getElementById('ev-id').value);
+  const v=db.ventas[idx];if(!v)return;
+  v.detalle=document.getElementById('ev-detalle').value.trim();
+  v.total=parseFloat(document.getElementById('ev-monto').value)||0;
+  v.tipo=document.getElementById('ev-tipo').value;
+  v.nota=document.getElementById('ev-nota').value;
+  save();
+  const esHistTotal=document.getElementById('modal-editar-venta').getAttribute('data-hist-total')==='1';
+  closeModal('editar-venta');
+  if(esHistTotal) verTodasVentas(); else render();
+}
+
+function eliminarVentaDesdeEditor(){
+  const idx=parseInt(document.getElementById('ev-id').value);
+  const esHistTotal=document.getElementById('modal-editar-venta').getAttribute('data-hist-total')==='1';
+  db.ventas.splice(idx,1);
+  save();
+  closeModal('editar-venta');
+  if(esHistTotal) verTodasVentas(); else render();
+}
+
 function eliminarVenta(vid){
   if(!confirm('Eliminar esta venta?'))return;
   db.ventas=db.ventas.filter(x=>x.id!==vid);
@@ -1052,6 +1143,22 @@ function eliminarVentaYVolver(vid){
   db.ventas=db.ventas.filter(x=>x.id!==vid);
   save();verTodasVentas();
 }
+
+// Delegación para lápiz editar venta
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('[data-editar-venta]');
+  if(!btn)return;
+  const idx=parseInt(btn.getAttribute('data-editar-venta'));
+  const esHistTotal=btn.getAttribute('data-hist-total')==='1';
+  const v=db.ventas[idx];if(!v)return;
+  document.getElementById('ev-id').value=idx;
+  document.getElementById('ev-detalle').value=v.detalle;
+  document.getElementById('ev-monto').value=v.total;
+  document.getElementById('ev-tipo').value=v.tipo;
+  document.getElementById('ev-nota').value=v.nota||'';
+  document.getElementById('modal-editar-venta').setAttribute('data-hist-total',esHistTotal?'1':'0');
+  document.getElementById('modal-editar-venta').classList.add('open');
+});
 
 // Delegación de eventos para eliminar ventas
 document.addEventListener('click',function(e){
@@ -1080,7 +1187,7 @@ function renderInventario(){
     <tr>
       <td><span style="font-weight:500">${p.nombre}</span><br><span style="font-size:11px;color:#888">${p.cat||''}</span></td>
       <td>${p.talle||'—'}</td>
-      <td><span class="badge ${p.stock===0?'stock-out':'stock-ok'}">${p.stock} ud.</span></td>
+      <td style="color:#1A1A1A;font-size:13px">${p.stock} unidades</td>
       <td>${fmt(p.precio)}</td>
       <td style="white-space:nowrap">
         <button class="btn sm" onclick="editarProducto('${p.id}')">Editar</button>
@@ -1095,7 +1202,7 @@ function renderClientes(){
   const conDeuda=db.clientes.filter(c=>c.deuda>0).length;
   document.getElementById('fiados-metrics').innerHTML=`
     <div class="metric"><div class="metric-label">Total fiado pendiente</div><div class="metric-val">${fmt(totDeuda)}</div></div>
-    <div class="metric" style="background:#6B6399;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Clientes con deuda</div><div class="metric-val" style="color:#fff">${conDeuda}</div></div>`;
+    <div class="metric" style="background:#fff;border:1.5px solid #ddd"><div class="metric-label" style="color:#555">Clientes con deuda</div><div class="metric-val" style="color:#1A1A1A">${conDeuda}</div></div>`;
   const q=(document.getElementById('cli-search').value||'').toLowerCase().trim();
   let lista=db.clientes.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
   if(q)lista=lista.filter(c=>c.nombre.toLowerCase().includes(q)||(c.tel||'').includes(q));
@@ -1108,47 +1215,47 @@ function renderClientes(){
     <div class="cli-card">
       <div class="cli-card-header" onclick="toggleCliente('${c.id}')">
         <div style="flex:1">
-          <div style="font-weight:600;font-size:16px;color:#2E2E2E">${c.nombre}</div>
+          <div style="font-weight:600;font-size:16px;color:#1A1A1A">${c.nombre}</div>
           ${c.tel?`<div style="font-size:12px;color:#888;margin-top:2px">${c.tel}</div>`:''}
           ${c.dir||c.loc?`<div style="font-size:12px;color:#aaa;margin-top:1px">${[c.dir,c.loc].filter(Boolean).join(', ')}</div>`:''}
         </div>
-        <div style="flex:1;text-align:center;font-size:20px;font-weight:700;color:${c.deuda>0?'#9b4444':'#4a7c59'}">${c.deuda>0?fmt(c.deuda):'$0'}</div>
-        <div style="flex:1;text-align:right;font-size:13px;color:#6B6399;font-weight:500">Ver cuenta ▾</div>
+        <div style="flex:1;text-align:center;font-size:20px;font-weight:700;color:${c.deuda>0?'#D32F2F':'#1A1A1A'}">${c.deuda>0?fmt(c.deuda):'$0'}</div>
+        <div style="flex:1;text-align:right;font-size:13px;color:#1A1A1A;font-weight:500">Ver cuenta ▾</div>
       </div>
       <div class="cli-card-body" id="cli-body-${c.id}">
         <div style="padding-top:12px">
 
           <!-- Resumen cuenta -->
           <div class="metric-row" style="margin-bottom:12px">
-            <div class="metric" style="background:#2E2E2E;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Total comprado</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(totalCompras)}</div></div>
-            <div class="metric" style="background:#9b4444;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Deuda pendiente</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(c.deuda||0)}</div></div>
+            <div class="metric" style="background:#1A1A1A;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Total comprado</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(totalCompras)}</div></div>
+            <div class="metric" style="background:#D32F2F;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Deuda pendiente</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(c.deuda||0)}</div></div>
           </div>
 
           <!-- Acciones pago -->
           ${c.deuda>0?`
           <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-            <button class="btn" style="background:#4a7c59;color:#fff;border-color:#4a7c59" onclick="pagarTotal('${c.id}')">Cobrar todo</button>
-            <button class="btn" style="background:#3a5a8a;color:#fff;border-color:#3a5a8a" onclick="abrirPagoFiado('${c.id}',${c.deuda})">Pago parcial</button>
-            <button class="btn" style="background:#2E2E2E;color:#fff;border-color:#2E2E2E" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
-            <button class="btn" style="background:#9b4444;color:#fff;border-color:#9b4444" onclick="eliminarCliente('${c.id}')">Eliminar</button>
+            <button class="btn" style="background:#2e7d32;color:#fff;border-color:#2e7d32" onclick="pagarTotal('${c.id}')">Cobrar todo</button>
+            <button class="btn" style="background:#1565C0;color:#fff;border-color:#1565C0" onclick="abrirPagoFiado('${c.id}',${c.deuda})">Pago parcial</button>
+            <button class="btn" style="background:#1A1A1A;color:#fff;border-color:#1A1A1A" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
+            <button class="btn" style="background:#D32F2F;color:#fff;border-color:#D32F2F" onclick="eliminarCliente('${c.id}')">Eliminar</button>
           </div>`:`
           <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-            <button class="btn" style="background:#2E2E2E;color:#fff;border-color:#2E2E2E" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
-            <button class="btn" style="background:#9b4444;color:#fff;border-color:#9b4444" onclick="eliminarCliente('${c.id}')">Eliminar</button>
+            <button class="btn" style="background:#1A1A1A;color:#fff;border-color:#1A1A1A" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
+            <button class="btn" style="background:#D32F2F;color:#fff;border-color:#D32F2F" onclick="eliminarCliente('${c.id}')">Eliminar</button>
           </div>`}
 
           <!-- Historial de compras -->
           ${compras.length?`
-          <div style="font-size:12px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px">Historial de compras</div>
+          <div style="font-size:12px;color:#1A1A1A;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px">Historial de compras</div>
           <div style="border-radius:8px;overflow:hidden;border:1px solid #eee">
             <table style="width:100%;border-collapse:collapse;font-size:13px">
               <thead>
                 <tr style="background:#f5f5f5">
-                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">FECHA</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">PRODUCTO</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">TALLE</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">PAGO</th>
-                  <th style="padding:8px 10px;text-align:right;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">PRECIO</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15)">FECHA</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15)">PRODUCTO</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15)">TALLE</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15)">PAGO</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:11px;color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15)">PRECIO</th>
                 </tr>
               </thead>
               <tbody>
@@ -1158,11 +1265,11 @@ function renderClientes(){
                   const talle=matchTalle?matchTalle[1].toUpperCase():'—';
                   const producto=co.detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim()||co.detalle;
                   return `<tr style="border-bottom:1px solid #f0f0f0">
-                    <td style="padding:8px 10px;color:#555;white-space:nowrap">${co.fecha}</td>
-                    <td style="padding:8px 10px;font-weight:500;color:#2E2E2E">${producto}</td>
-                    <td style="padding:8px 10px;color:#555">${talle}</td>
+                    <td style="padding:8px 10px;color:#1A1A1A">${co.fecha}</td>
+                    <td style="padding:8px 10px;color:#1A1A1A">${producto}</td>
+                    <td style="padding:8px 10px;color:#1A1A1A">${talle}</td>
                     <td style="padding:8px 10px">${tipoBadge(co.tipo)}</td>
-                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#2E2E2E">${fmt(co.total)}</td>
+                    <td style="padding:8px 10px;text-align:right;color:#1A1A1A">${fmt(co.total)}</td>
                   </tr>`;
                 }).join('')}
               </tbody>
@@ -1171,11 +1278,14 @@ function renderClientes(){
 
           <!-- Historial de pagos -->
           ${(c.pagos&&c.pagos.length)?`
-          <div style="font-size:12px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 6px">Pagos recibidos</div>
+          <div style="font-size:12px;color:#1A1A1A;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin:12px 0 6px">Pagos recibidos</div>
           ${c.pagos.slice().reverse().slice(0,5).map(pg=>`
-            <div style="font-size:12px;color:#555;padding:4px 0;border-bottom:0.5px solid #eee;display:flex;justify-content:space-between">
-              <span>${pg.fecha}${pg.nota?' · '+pg.nota:''}</span>
-              <span style="font-weight:500;color:#3B6D11">${fmt(pg.monto)}</span>
+            <div style="font-size:13px;padding:8px 12px;border-radius:8px;background:#1A1A1A;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+              <span style="color:#fff">${pg.fecha}${pg.nota?' · '+pg.nota:''}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-weight:600;color:#fff">${fmt(pg.monto)}</span>
+                <button class="btn sm danger" onclick="deshacerPago('${c.id}','${pg.id||''}')">Eliminar</button>
+              </div>
             </div>`).join('')}`:''}
         </div>
       </div>
@@ -1188,7 +1298,7 @@ function renderGastos(){
   const gm=db.gastos.filter(g=>g.mes===mesAct);
   document.getElementById('gastos-metrics').innerHTML=`
     <div class="metric"><div class="metric-label">Gastos del mes</div><div class="metric-val">${fmt(gm.reduce((s,g)=>s+g.monto,0))}</div></div>
-    <div class="metric" style="background:#6B6399;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Total acumulado</div><div class="metric-val" style="color:#fff">${fmt(db.gastos.reduce((s,g)=>s+g.monto,0))}</div></div>`;
+    <div class="metric" style="background:#fff;border:1.5px solid #ddd"><div class="metric-label" style="color:#555">Total acumulado</div><div class="metric-val" style="color:#1A1A1A">${fmt(db.gastos.reduce((s,g)=>s+g.monto,0))}</div></div>`;
   const tb=document.getElementById('gastos-tbody');
   if(!db.gastos.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty">Sin gastos registrados</div></td></tr>`;return;}
   tb.innerHTML=db.gastos.slice().sort((a,b)=>b.ts-a.ts).map(g=>`
@@ -1201,22 +1311,85 @@ function renderGastos(){
 /* ==============================
    EXPORTAR COMPROBANTE PDF
 ============================== */
-function exportarComprobante(cid){
-  const c=db.clientes.find(x=>x.id===cid);
-  if(!c)return;
-  const compras=c.compras||[];
-  const totalCompras=compras.reduce((s,x)=>s+x.total,0);
-  const fechaHoy=hoy();
-  const ahora=new Date();
-  const nombreMes=ahora.toLocaleString('es-AR',{month:'long'});
-  const anio=ahora.getFullYear();
+let pdfTab='mes';
 
-  // Filtrar compras del mes actual
-  const comprasMes=compras.filter(co=>{
+function setPdfTab(t){
+  pdfTab=t;
+  document.getElementById('pdf-tab-mes').classList.toggle('active',t==='mes');
+  document.getElementById('pdf-tab-sel').classList.toggle('active',t==='sel');
+  document.getElementById('pdf-content-mes').style.display=t==='mes'?'':'none';
+  document.getElementById('pdf-content-sel').style.display=t==='sel'?'':'none';
+}
+
+function exportarComprobante(cid){
+  const c=db.clientes.find(x=>x.id===cid);if(!c)return;
+  document.getElementById('pdf-cliente-id').value=cid;
+  pdfTab='mes';
+  setPdfTab('mes');
+
+  // Poblar selector de meses disponibles
+  const compras=c.compras||[];
+  const mesesSet=new Set();
+  compras.forEach(co=>{
     const p=co.fecha.split('/');
-    return p.length>=3 && parseInt(p[1])===ahora.getMonth()+1 && parseInt(p[2])===ahora.getFullYear();
+    if(p.length>=3) mesesSet.add(p[1].padStart(2,'0')+'/'+p[2]);
   });
-  const totalMes=comprasMes.reduce((s,x)=>s+x.total,0);
+  const ahora=new Date();
+  const mesActual=String(ahora.getMonth()+1).padStart(2,'0')+'/'+ahora.getFullYear();
+  mesesSet.add(mesActual);
+  const meses=[...mesesSet].sort().reverse();
+  const nombreMes=(m)=>{
+    const [mm,yy]=m.split('/');
+    return new Date(yy,mm-1,1).toLocaleString('es-AR',{month:'long',year:'numeric'});
+  };
+  document.getElementById('pdf-mes-sel').innerHTML=meses.map(m=>`<option value="${m}">${nombreMes(m)}</option>`).join('');
+
+  // Poblar lista de compras seleccionables
+  const lista=document.getElementById('pdf-compras-lista');
+  if(!compras.length){
+    lista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Sin compras registradas</div>';
+  } else {
+    lista.innerHTML=compras.slice().reverse().map((co,i)=>`
+      <label style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:13px">
+        <input type="checkbox" data-idx="${compras.length-1-i}" style="width:16px;height:16px;accent-color:#3B2F8F">
+        <span><strong>${co.detalle}</strong> <span style="color:#888">${co.fecha} · ${fmt(co.total)}</span></span>
+      </label>`).join('');
+  }
+
+  document.getElementById('modal-exportar-pdf').classList.add('open');
+}
+
+function generarPDF(){
+  const cid=document.getElementById('pdf-cliente-id').value;
+  const c=db.clientes.find(x=>x.id===cid);if(!c)return;
+  const compras=c.compras||[];
+  let seleccionadas=[];
+  let tituloSeccion='';
+
+  if(pdfTab==='mes'){
+    const mesVal=document.getElementById('pdf-mes-sel').value;
+    const [mm,yy]=mesVal.split('/');
+    seleccionadas=compras.filter(co=>{
+      const p=co.fecha.split('/');
+      return p.length>=3 && p[1].padStart(2,'0')===mm && p[2]===yy;
+    });
+    tituloSeccion='Mes de '+new Date(yy,mm-1,1).toLocaleString('es-AR',{month:'long',year:'numeric'});
+  } else {
+    const checks=document.querySelectorAll('#pdf-compras-lista input[type=checkbox]:checked');
+    checks.forEach(ch=>{
+      const idx=parseInt(ch.getAttribute('data-idx'));
+      if(compras[idx]) seleccionadas.push(compras[idx]);
+    });
+    if(!seleccionadas.length){alert('Seleccioná al menos una compra.');return;}
+    tituloSeccion='Compras seleccionadas';
+  }
+
+  closeModal('exportar-pdf');
+
+  const fechaHoy=hoy();
+  const totalCompras=seleccionadas.reduce((s,x)=>s+x.total,0);
+  const deudaInicial=c.deudaInicial||0;
+  const totalConDeuda=totalCompras+deudaInicial+(c.deuda||0);
 
   function parsearDetalle(detalle){
     const matchTalle=detalle.match(/\(([^)]+)\)/);
@@ -1225,19 +1398,18 @@ function exportarComprobante(cid){
     return {producto,talle};
   }
 
-  function filasPDF(lista){
-    if(!lista.length) return `<tr><td colspan="5" style="text-align:center;color:#aaa;padding:14px">Sin compras registradas</td></tr>`;
-    return lista.map(co=>{
-      const {producto,talle}=parsearDetalle(co.detalle);
-      return `<tr>
-        <td>${co.fecha}</td>
-        <td>${producto}</td>
-        <td style="text-align:center">${talle}</td>
-        <td style="text-align:center">${co.tipo.toUpperCase()}</td>
-        <td style="text-align:right;font-weight:600">${fmt(co.total)}</td>
-      </tr>`;
-    }).join('');
-  }
+  const filas=seleccionadas.length
+    ? seleccionadas.map(co=>{
+        const {producto,talle}=parsearDetalle(co.detalle);
+        return `<tr>
+          <td>${co.fecha}</td>
+          <td>${producto}</td>
+          <td style="text-align:center">${talle}</td>
+          <td style="text-align:center">${co.tipo.toUpperCase()}</td>
+          <td style="text-align:right;font-weight:600">${fmt(co.total)}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="5" style="text-align:center;color:#aaa;padding:14px">Sin compras en este período</td></tr>`;
 
   const html=`<!DOCTYPE html>
 <html lang="es">
@@ -1247,90 +1419,83 @@ function exportarComprobante(cid){
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Poppins',sans-serif;color:#2E2E2E;padding:40px;max-width:720px;margin:0 auto;font-size:13px;background:#fff}
-  .header{border-bottom:3px solid #2E2E2E;padding-bottom:16px;margin-bottom:28px}
-  .tienda-title{font-size:28px;font-weight:700;letter-spacing:1px;color:#2E2E2E;margin-bottom:4px}
-  .resumen-titulo{font-size:16px;font-weight:600;color:#2E2E2E;margin-bottom:2px}
-  .resumen-sub{font-size:13px;color:#666}
-  .meta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
-  .meta-right{text-align:right;font-size:12px;color:#888}
-  .totales{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:28px}
-  .tot-box{border:1.5px solid #eee;border-radius:8px;padding:12px 14px}
-  .tot-box.dark{background:#2E2E2E;border-color:#2E2E2E}
-  .tot-box.lila{background:#6B6399;border-color:#6B6399}
+  body{font-family:'Poppins',sans-serif;color:#1A1A1A;padding:40px;max-width:720px;margin:0 auto;font-size:13px;background:#fff}
+  .back-btn{background:#1A1A1A;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;margin-bottom:20px;font-family:'Poppins',sans-serif;font-weight:600;display:inline-block}
+  .print-btn{background:#3B2F8F;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;margin-bottom:20px;margin-left:8px;font-family:'Poppins',sans-serif;font-weight:600;display:inline-block}
+  .header-bar{background:#3B2F8F;color:#fff;padding:20px 28px;border-radius:12px;margin-bottom:24px}
+  .tienda-title{font-size:26px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+  .resumen-sub{font-size:14px;opacity:0.85}
+  .info-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;color:#666;margin-top:16px}
+  .totales{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:20px 0}
+  .tot-box{border:1.5px solid #eee;border-radius:10px;padding:13px 16px}
+  .tot-box.dark{background:#1A1A1A;border-color:#1A1A1A}
+  .tot-box.red{background:#D32F2F;border-color:#D32F2F}
   .tot-label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;font-weight:600}
-  .tot-box.dark .tot-label,.tot-box.lila .tot-label{color:rgba(255,255,255,0.6)}
-  .tot-val{font-size:20px;font-weight:700;color:#2E2E2E}
-  .tot-box.dark .tot-val,.tot-box.lila .tot-val{color:#fff}
-  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#2E2E2E;margin-bottom:8px;margin-top:24px;padding-bottom:6px;border-bottom:1px solid #eee}
+  .tot-box.dark .tot-label,.tot-box.red .tot-label{color:rgba(255,255,255,0.6)}
+  .tot-val{font-size:19px;font-weight:700;color:#1A1A1A}
+  .tot-box.dark .tot-val,.tot-box.red .tot-val{color:#fff}
+  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#1A1A1A;margin-bottom:8px;margin-top:20px;padding-bottom:6px;border-bottom:1.5px solid #eee}
   table{width:100%;border-collapse:collapse;font-size:12px}
   thead tr{background:#f5f5f5}
   th{padding:9px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#555;border-bottom:1.5px solid #ddd}
-  td{padding:9px 10px;border-bottom:1px solid #f0f0f0;color:#2E2E2E}
+  td{padding:9px 10px;border-bottom:1px solid #f0f0f0;color:#1A1A1A}
   tr:last-child td{border-bottom:none}
   .total-row td{font-weight:700;background:#f9f9f9;border-top:1.5px solid #ddd;padding:10px}
-  .footer{margin-top:36px;padding-top:14px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
-  .print-btn{background:#2E2E2E;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;cursor:pointer;margin-bottom:24px;font-family:'Poppins',sans-serif;font-weight:600}
+  .footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
   @media print{.no-print{display:none}body{padding:20px}}
 </style>
 </head>
 <body>
-<button class="print-btn no-print" onclick="window.print()">Imprimir / Guardar PDF</button>
-
-<div class="header">
-  <div class="tienda-title">TIENDA CANDELA</div>
-  <div class="resumen-titulo">Resumen de cuenta de ${c.nombre}</div>
-  <div class="resumen-sub">Mes de ${nombreMes} de ${anio}</div>
+<div class="no-print">
+  <button class="back-btn" onclick="window.close()">← Volver</button>
+  <button class="print-btn" onclick="window.print()">Imprimir / Guardar PDF</button>
 </div>
 
-<div class="meta-right" style="margin-bottom:20px">
-  ${c.tel?`<div>Tel: ${c.tel}</div>`:''}
-  ${c.dir?`<div>${c.dir}${c.loc?', '+c.loc:''}</div>`:''}
-  <div>Emitido el ${fechaHoy}</div>
+<div class="header-bar">
+  <div class="tienda-title">TIENDA CANDELA</div>
+  <div class="resumen-sub">Resumen de cuenta de <strong>${c.nombre}</strong> &mdash; ${tituloSeccion}</div>
+</div>
+
+<div class="info-row">
+  <span>${c.tel?'Tel: '+c.tel:''}${c.dir?' | '+c.dir+(c.loc?', '+c.loc:''):''}</span>
+  <span>Emitido el ${fechaHoy}</span>
 </div>
 
 <div class="totales">
   <div class="tot-box dark">
-    <div class="tot-label">Total comprado</div>
+    <div class="tot-label">Total compras</div>
     <div class="tot-val">${fmt(totalCompras)}</div>
   </div>
-  <div class="tot-box lila">
-    <div class="tot-label">Comprado este mes</div>
-    <div class="tot-val">${fmt(totalMes)}</div>
+  <div class="tot-box" style="border-color:#1565C0">
+    <div class="tot-label" style="color:#1565C0">Deuda pendiente</div>
+    <div class="tot-val" style="color:#1565C0">${fmt(c.deuda||0)}</div>
   </div>
-  <div class="tot-box" style="border-color:${c.deuda>0?'#9b4444':'#4a7c59'};background:${c.deuda>0?'#9b4444':'#4a7c59'}">
-    <div class="tot-label" style="color:rgba(255,255,255,0.65)">Deuda pendiente</div>
-    <div class="tot-val" style="color:#fff">${fmt(c.deuda||0)}</div>
+  <div class="tot-box red">
+    <div class="tot-label">TOTAL A COBRAR</div>
+    <div class="tot-val">${fmt(totalCompras+(c.deuda||0))}</div>
   </div>
 </div>
 
-<div class="section-title">Compras de ${nombreMes} de ${anio}</div>
+<div class="section-title">${tituloSeccion}</div>
 <table>
   <thead><tr>
     <th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:center">Pago</th><th style="text-align:right">Precio</th>
   </tr></thead>
-  <tbody>${filasPDF(comprasMes)}</tbody>
+  <tbody>${filas}</tbody>
   <tr class="total-row">
-    <td colspan="4">Total del mes</td>
-    <td style="text-align:right">${fmt(totalMes)}</td>
-  </tr>
-</table>
-
-<div class="section-title">Historial completo de compras</div>
-<table>
-  <thead><tr>
-    <th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:center">Pago</th><th style="text-align:right">Precio</th>
-  </tr></thead>
-  <tbody>${filasPDF(compras.slice().reverse())}</tbody>
-  <tr class="total-row">
-    <td colspan="4">Total acumulado</td>
+    <td colspan="4">Subtotal compras</td>
     <td style="text-align:right">${fmt(totalCompras)}</td>
+  </tr>
+  ${c.deuda>0?`<tr class="total-row"><td colspan="4" style="color:#D32F2F">+ Deuda pendiente</td><td style="text-align:right;color:#D32F2F">${fmt(c.deuda)}</td></tr>`:''}
+  <tr style="background:#1A1A1A">
+    <td colspan="4" style="color:#fff;font-weight:700;padding:10px">TOTAL A COBRAR</td>
+    <td style="text-align:right;color:#fff;font-weight:700;padding:10px">${fmt(totalCompras+(c.deuda||0))}</td>
   </tr>
 </table>
 
 <div class="footer">
   <span>Tienda Candela — Comprobante generado el ${fechaHoy}</span>
-  <span>${c.deuda>0?'Deuda pendiente: '+fmt(c.deuda):'Cuenta al día'}</span>
+  <span>${c.deuda>0?'Deuda pendiente incluida: '+fmt(c.deuda):'Sin deuda pendiente'}</span>
 </div>
 </body>
 </html>`;
