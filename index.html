@@ -52,8 +52,8 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);fon
 .btn.primary:hover{background:#333;border-color:#333}
 .btn.success{background:#16a34a;color:#fff;border-color:#16a34a}
 .btn.success:hover{background:#15803d}
-.btn.danger{color:#b91c1c;border-color:#fca5a5}
-.btn.danger:hover{background:#fee2e2}
+.btn.danger{background:#9b4444;color:#fff;border-color:#9b4444}
+.btn.danger:hover{background:#7a3333;border-color:#7a3333}
 .btn.sm{padding:4px 12px;font-size:12px}
 .btn.outline-dark{border-color:#ccc;color:var(--black)}
 .btn.outline-dark:hover{background:#f0f0f0}
@@ -216,10 +216,10 @@ tr:hover td{background:#fafafa}
     <div class="metric-row" id="caja-metrics"></div>
 
     <!-- Accesos rápidos -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
-      <button class="btn primary" onclick="openModal('venta')">+ Nueva venta</button>
-      <button class="btn" onclick="openModal('cliente')" style="background:#4a7c59;color:#fff;border-color:#4a7c59">+ Nuevo cliente</button>
-      <button class="btn" onclick="openModal('gasto')" style="background:#9b4444;color:#fff;border-color:#9b4444">+ Registrar gasto</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;justify-content:center">
+      <button class="btn primary" onclick="openModal('venta')" style="padding:12px 24px;font-size:15px">+ Nueva venta</button>
+      <button class="btn" onclick="openModal('cliente')" style="background:#4a7c59;color:#fff;border-color:#4a7c59;padding:12px 24px;font-size:15px">+ Nuevo cliente</button>
+      <button class="btn" onclick="openModal('gasto')" style="background:#9b4444;color:#fff;border-color:#9b4444;padding:12px 24px;font-size:15px">+ Registrar gasto</button>
     </div>
 
     <div class="section-title" style="color:#2E2E2E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">
@@ -254,8 +254,8 @@ tr:hover td{background:#fafafa}
 
   <!-- INVENTARIO -->
   <div class="section" id="sec-inventario">
-    <div class="section-title">
-      Stock de ropa
+    <div class="section-title" style="text-transform:uppercase;letter-spacing:0.5px">
+      STOCK DE ROPA
       <div style="display:flex;gap:6px">
         <button class="btn sm outline-dark" onclick="openModal('cat-editor')">Categorias</button>
         <button class="btn primary" onclick="openModal('producto')">+ Agregar</button>
@@ -271,8 +271,8 @@ tr:hover td{background:#fafafa}
   <!-- CLIENTES -->
   <div class="section" id="sec-clientes">
     <div class="metric-row" id="fiados-metrics"></div>
-    <div class="section-title">
-      Clientes
+    <div class="section-title" style="text-transform:uppercase;letter-spacing:0.5px">
+      CLIENTES
       <button class="btn primary" onclick="openModal('cliente')">+ Agregar</button>
     </div>
     <div class="search-bar">
@@ -285,8 +285,8 @@ tr:hover td{background:#fafafa}
   <!-- GASTOS -->
   <div class="section" id="sec-gastos">
     <div class="metric-row" id="gastos-metrics"></div>
-    <div class="section-title">
-      Gastos del mes
+    <div class="section-title" style="text-transform:uppercase;letter-spacing:0.5px">
+      GASTOS DEL MES
       <button class="btn primary" onclick="openModal('gasto')">+ Registrar</button>
     </div>
     <div class="card" style="padding:0">
@@ -336,7 +336,10 @@ tr:hover td{background:#fafafa}
       </div>
     </div>
     <div id="ctab-nuevo-content" style="display:none">
-      <div class="field"><label>Nombre del comprador</label><input id="venta-nuevo-nombre"></div>
+      <div class="field"><label>Nombre y apellido</label><input id="venta-nuevo-nombre"></div>
+      <div class="field"><label>Telefono</label><input id="venta-nuevo-tel"></div>
+      <div class="field"><label>Direccion</label><input id="venta-nuevo-dir"></div>
+      <div class="field"><label>Localidad</label><input id="venta-nuevo-loc"></div>
       <div style="font-size:12px;color:#888;margin-top:-6px;margin-bottom:10px">Se creara como nuevo cliente automaticamente.</div>
     </div>
 
@@ -404,7 +407,9 @@ tr:hover td{background:#fafafa}
     <h2>Cliente</h2>
     <input type="hidden" id="cli-edit-id">
     <div class="field"><label>Nombre y apellido</label><input id="cli-nombre"></div>
-    <div class="field"><label>Telefono (opcional)</label><input id="cli-tel"></div>
+    <div class="field"><label>Telefono</label><input id="cli-tel"></div>
+    <div class="field"><label>Direccion</label><input id="cli-dir"></div>
+    <div class="field"><label>Localidad</label><input id="cli-loc"></div>
     <div class="field"><label>Deuda inicial ($)</label><input id="cli-deuda" type="number" min="0" value="0"></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('cliente')">Cancelar</button>
@@ -542,6 +547,9 @@ function openModal(name){
     document.getElementById('venta-tipo').value='Efectivo';
     document.getElementById('venta-nota').value='';
     document.getElementById('venta-nuevo-nombre').value='';
+    document.getElementById('venta-nuevo-tel').value='';
+    document.getElementById('venta-nuevo-dir').value='';
+    document.getElementById('venta-nuevo-loc').value='';
     document.getElementById('mv-nombre').value='';
     document.getElementById('mv-talle').value='';
     document.getElementById('mv-precio').value='';
@@ -571,7 +579,7 @@ function openModal(name){
     document.getElementById('talle-custom-input').style.display='';
   }
   if(name==='cliente'){
-    ['cli-edit-id','cli-nombre','cli-tel'].forEach(x=>document.getElementById(x).value='');
+    ['cli-edit-id','cli-nombre','cli-tel','cli-dir','cli-loc'].forEach(x=>document.getElementById(x).value='');
     document.getElementById('cli-deuda').value=0;
   }
   if(name==='gasto'){
@@ -709,9 +717,17 @@ function guardarVenta(){
   } else {
     const nombre=document.getElementById('venta-nuevo-nombre').value.trim();
     if(nombre){
-      // Crear cliente nuevo si no existe ya con ese nombre
       let c=db.clientes.find(x=>x.nombre.toLowerCase()===nombre.toLowerCase());
-      if(!c){c={id:uid(),nombre,tel:'',deuda:0,pagos:[],compras:[]};db.clientes.push(c);}
+      if(!c){
+        c={
+          id:uid(),nombre,
+          tel:document.getElementById('venta-nuevo-tel').value.trim(),
+          dir:document.getElementById('venta-nuevo-dir').value.trim(),
+          loc:document.getElementById('venta-nuevo-loc').value.trim(),
+          deuda:0,pagos:[],compras:[]
+        };
+        db.clientes.push(c);
+      }
       clienteId=c.id;clienteNombre=c.nombre;
     }
   }
@@ -892,7 +908,14 @@ function agregarCategoria(){
 ============================== */
 function guardarCliente(){
   const editId=document.getElementById('cli-edit-id').value;
-  const obj={nombre:document.getElementById('cli-nombre').value.trim(),tel:document.getElementById('cli-tel').value.trim(),deuda:parseFloat(document.getElementById('cli-deuda').value)||0,pagos:[],compras:[]};
+  const obj={
+    nombre:document.getElementById('cli-nombre').value.trim(),
+    tel:document.getElementById('cli-tel').value.trim(),
+    dir:document.getElementById('cli-dir').value.trim(),
+    loc:document.getElementById('cli-loc').value.trim(),
+    deuda:parseFloat(document.getElementById('cli-deuda').value)||0,
+    pagos:[],compras:[]
+  };
   if(!obj.nombre){alert('Ingresa el nombre del cliente.');return;}
   if(editId){const c=db.clientes.find(x=>x.id===editId);if(c){obj.pagos=c.pagos||[];obj.compras=c.compras||[];Object.assign(c,obj);}}
   else{obj.id=uid();db.clientes.push(obj);}
@@ -953,8 +976,14 @@ function eliminarGasto(gid){
 function render(){renderCaja();renderInventario();renderClientes();renderGastos();}
 
 function tipoBadge(tipo){
-  const cls={Efectivo:'efectivo',Transferencia:'transferencia',Tarjeta:'tarjeta',Fiado:'fiado'}[tipo]||'stock-ok';
-  return `<span class="badge ${cls}">${tipo.toUpperCase()}</span>`;
+  const estilos={
+    Efectivo: 'background:#4a7c59;color:#fff;border-color:#4a7c59',
+    Transferencia: 'background:#3a5a8a;color:#fff;border-color:#3a5a8a',
+    Tarjeta: 'background:#b06b20;color:#fff;border-color:#b06b20',
+    Fiado: 'background:#6B6399;color:#fff;border-color:#6B6399'
+  };
+  const estilo=estilos[tipo]||'background:#2E2E2E;color:#fff;border-color:#2E2E2E';
+  return `<span class="badge" style="${estilo}">${tipo.toUpperCase()}</span>`;
 }
 
 function fmtDetalle(detalle){
@@ -1066,7 +1095,7 @@ function renderClientes(){
   const conDeuda=db.clientes.filter(c=>c.deuda>0).length;
   document.getElementById('fiados-metrics').innerHTML=`
     <div class="metric"><div class="metric-label">Total fiado pendiente</div><div class="metric-val">${fmt(totDeuda)}</div></div>
-    <div class="metric light"><div class="metric-label">Clientes con deuda</div><div class="metric-val">${conDeuda}</div></div>`;
+    <div class="metric" style="background:#6B6399;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Clientes con deuda</div><div class="metric-val" style="color:#fff">${conDeuda}</div></div>`;
   const q=(document.getElementById('cli-search').value||'').toLowerCase().trim();
   let lista=db.clientes.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
   if(q)lista=lista.filter(c=>c.nombre.toLowerCase().includes(q)||(c.tel||'').includes(q));
@@ -1078,50 +1107,66 @@ function renderClientes(){
     return `
     <div class="cli-card">
       <div class="cli-card-header" onclick="toggleCliente('${c.id}')">
-        <div>
-          <div style="font-weight:500;font-size:15px">${c.nombre}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:16px;color:#2E2E2E">${c.nombre}</div>
           ${c.tel?`<div style="font-size:12px;color:#888;margin-top:2px">${c.tel}</div>`:''}
+          ${c.dir||c.loc?`<div style="font-size:12px;color:#aaa;margin-top:1px">${[c.dir,c.loc].filter(Boolean).join(', ')}</div>`:''}
         </div>
-        <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-          ${c.deuda>0?`<span class="badge fiado">Debe ${fmt(c.deuda)}</span>`:'<span class="badge pagado">Sin deuda</span>'}
-          <span style="font-size:11px;color:#bbb">ver cuenta ▾</span>
-        </div>
+        <div style="flex:1;text-align:center;font-size:20px;font-weight:700;color:${c.deuda>0?'#9b4444':'#4a7c59'}">${c.deuda>0?fmt(c.deuda):'$0'}</div>
+        <div style="flex:1;text-align:right;font-size:13px;color:#6B6399;font-weight:500">Ver cuenta ▾</div>
       </div>
       <div class="cli-card-body" id="cli-body-${c.id}">
         <div style="padding-top:12px">
 
           <!-- Resumen cuenta -->
           <div class="metric-row" style="margin-bottom:12px">
-            <div class="metric"><div class="metric-label">Total comprado</div><div style="font-size:18px;font-weight:500">${fmt(totalCompras)}</div></div>
-            <div class="metric"><div class="metric-label">Deuda pendiente</div><div style="font-size:18px;font-weight:500;color:${c.deuda>0?'#72243E':'#3B6D11'}">${fmt(c.deuda||0)}</div></div>
+            <div class="metric" style="background:#2E2E2E;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Total comprado</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(totalCompras)}</div></div>
+            <div class="metric" style="background:#9b4444;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Deuda pendiente</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(c.deuda||0)}</div></div>
           </div>
 
           <!-- Acciones pago -->
           ${c.deuda>0?`
           <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-            <button class="btn success" onclick="pagarTotal('${c.id}')">Cobrar todo</button>
-            <button class="btn primary" onclick="abrirPagoFiado('${c.id}',${c.deuda})">Pago parcial</button>
-            <button class="btn outline-dark" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
-            <button class="btn danger" onclick="eliminarCliente('${c.id}')">Eliminar</button>
+            <button class="btn" style="background:#4a7c59;color:#fff;border-color:#4a7c59" onclick="pagarTotal('${c.id}')">Cobrar todo</button>
+            <button class="btn" style="background:#3a5a8a;color:#fff;border-color:#3a5a8a" onclick="abrirPagoFiado('${c.id}',${c.deuda})">Pago parcial</button>
+            <button class="btn" style="background:#2E2E2E;color:#fff;border-color:#2E2E2E" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
+            <button class="btn" style="background:#9b4444;color:#fff;border-color:#9b4444" onclick="eliminarCliente('${c.id}')">Eliminar</button>
           </div>`:`
           <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-            <span class="badge pagado" style="font-size:12px;padding:5px 12px">Sin deuda</span>
-            <button class="btn sm outline-dark" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
-            <button class="btn sm danger" onclick="eliminarCliente('${c.id}')">Eliminar</button>
+            <button class="btn" style="background:#2E2E2E;color:#fff;border-color:#2E2E2E" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
+            <button class="btn" style="background:#9b4444;color:#fff;border-color:#9b4444" onclick="eliminarCliente('${c.id}')">Eliminar</button>
           </div>`}
 
           <!-- Historial de compras -->
           ${compras.length?`
           <div style="font-size:12px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px">Historial de compras</div>
-          <div style="background:#F5F4F0;border-radius:8px;overflow:hidden">
-            ${compras.slice().reverse().slice(0,10).map(co=>`
-              <div style="padding:8px 12px;border-bottom:0.5px solid #eee;display:flex;justify-content:space-between;align-items:flex-start">
-                <div>
-                  <div style="font-size:13px;font-weight:500">${co.detalle}</div>
-                  <div style="font-size:11px;color:#888;margin-top:2px">${co.fecha} &middot; ${tipoBadge(co.tipo)}</div>
-                </div>
-                <div style="font-size:13px;font-weight:500;white-space:nowrap;margin-left:12px">${fmt(co.total)}</div>
-              </div>`).join('')}
+          <div style="border-radius:8px;overflow:hidden;border:1px solid #eee">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="background:#f5f5f5">
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">FECHA</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">PRODUCTO</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">TALLE</th>
+                  <th style="padding:8px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">PAGO</th>
+                  <th style="padding:8px 10px;text-align:right;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #eee">PRECIO</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${compras.slice().reverse().map(co=>{
+                  // Parsear detalle: "Nombre (TALLE) xCant" o texto libre
+                  const matchTalle=co.detalle.match(/\(([^)]+)\)/);
+                  const talle=matchTalle?matchTalle[1].toUpperCase():'—';
+                  const producto=co.detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim()||co.detalle;
+                  return `<tr style="border-bottom:1px solid #f0f0f0">
+                    <td style="padding:8px 10px;color:#555;white-space:nowrap">${co.fecha}</td>
+                    <td style="padding:8px 10px;font-weight:500;color:#2E2E2E">${producto}</td>
+                    <td style="padding:8px 10px;color:#555">${talle}</td>
+                    <td style="padding:8px 10px">${tipoBadge(co.tipo)}</td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#2E2E2E">${fmt(co.total)}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
           </div>`:'<div style="font-size:13px;color:#bbb">Sin compras registradas.</div>'}
 
           <!-- Historial de pagos -->
@@ -1143,7 +1188,7 @@ function renderGastos(){
   const gm=db.gastos.filter(g=>g.mes===mesAct);
   document.getElementById('gastos-metrics').innerHTML=`
     <div class="metric"><div class="metric-label">Gastos del mes</div><div class="metric-val">${fmt(gm.reduce((s,g)=>s+g.monto,0))}</div></div>
-    <div class="metric light"><div class="metric-label">Total acumulado</div><div class="metric-val">${fmt(db.gastos.reduce((s,g)=>s+g.monto,0))}</div></div>`;
+    <div class="metric" style="background:#6B6399;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Total acumulado</div><div class="metric-val" style="color:#fff">${fmt(db.gastos.reduce((s,g)=>s+g.monto,0))}</div></div>`;
   const tb=document.getElementById('gastos-tbody');
   if(!db.gastos.length){tb.innerHTML=`<tr><td colspan="5"><div class="empty">Sin gastos registrados</div></td></tr>`;return;}
   tb.innerHTML=db.gastos.slice().sort((a,b)=>b.ts-a.ts).map(g=>`
@@ -1160,132 +1205,132 @@ function exportarComprobante(cid){
   const c=db.clientes.find(x=>x.id===cid);
   if(!c)return;
   const compras=c.compras||[];
-  const pagos=c.pagos||[];
   const totalCompras=compras.reduce((s,x)=>s+x.total,0);
   const fechaHoy=hoy();
-
-  // Mes actual para filtrar
   const ahora=new Date();
-  const mesStr=String(ahora.getMonth()+1).padStart(2,'0');
-  const anioStr=ahora.getFullYear();
-  const nombreMes=ahora.toLocaleString('es-AR',{month:'long',year:'numeric'});
+  const nombreMes=ahora.toLocaleString('es-AR',{month:'long'});
+  const anio=ahora.getFullYear();
 
+  // Filtrar compras del mes actual
   const comprasMes=compras.filter(co=>{
-    // fecha en formato d/m/yyyy
-    const partes=co.fecha.split('/');
-    if(partes.length<3)return false;
-    return parseInt(partes[1])===ahora.getMonth()+1 && parseInt(partes[2])===ahora.getFullYear();
+    const p=co.fecha.split('/');
+    return p.length>=3 && parseInt(p[1])===ahora.getMonth()+1 && parseInt(p[2])===ahora.getFullYear();
   });
   const totalMes=comprasMes.reduce((s,x)=>s+x.total,0);
 
-  const filasComprasMes=comprasMes.length?comprasMes.map(co=>`
-    <tr>
-      <td>${co.fecha}</td>
-      <td>${co.detalle}</td>
-      <td style="text-align:right">${fmt(co.total)}</td>
-      <td style="text-align:center">${co.tipo}</td>
-    </tr>`).join(''):`<tr><td colspan="4" style="text-align:center;color:#aaa;padding:12px">Sin compras este mes</td></tr>`;
+  function parsearDetalle(detalle){
+    const matchTalle=detalle.match(/\(([^)]+)\)/);
+    const talle=matchTalle?matchTalle[1].toUpperCase():'—';
+    const producto=detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim()||detalle;
+    return {producto,talle};
+  }
 
-  const filasComprasTotal=compras.length?compras.slice().reverse().map(co=>`
-    <tr>
-      <td>${co.fecha}</td>
-      <td>${co.detalle}</td>
-      <td style="text-align:right">${fmt(co.total)}</td>
-      <td style="text-align:center">${co.tipo}</td>
-    </tr>`).join(''):`<tr><td colspan="4" style="text-align:center;color:#aaa;padding:12px">Sin compras registradas</td></tr>`;
-
-  const filasPagos=pagos.length?pagos.slice().reverse().map(pg=>`
-    <tr>
-      <td>${pg.fecha}</td>
-      <td>${pg.nota||'—'}</td>
-      <td style="text-align:right;color:#3B6D11;font-weight:500">${fmt(pg.monto)}</td>
-    </tr>`).join(''):`<tr><td colspan="3" style="text-align:center;color:#aaa;padding:12px">Sin pagos registrados</td></tr>`;
+  function filasPDF(lista){
+    if(!lista.length) return `<tr><td colspan="5" style="text-align:center;color:#aaa;padding:14px">Sin compras registradas</td></tr>`;
+    return lista.map(co=>{
+      const {producto,talle}=parsearDetalle(co.detalle);
+      return `<tr>
+        <td>${co.fecha}</td>
+        <td>${producto}</td>
+        <td style="text-align:center">${talle}</td>
+        <td style="text-align:center">${co.tipo.toUpperCase()}</td>
+        <td style="text-align:right;font-weight:600">${fmt(co.total)}</td>
+      </tr>`;
+    }).join('');
+  }
 
   const html=`<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Comprobante — ${c.nombre}</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<title>Cuenta — ${c.nombre}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#2C2C2A;padding:40px;max-width:680px;margin:0 auto;font-size:13px}
-  .logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;letter-spacing:1px;margin-bottom:4px}
-  .header{border-bottom:1.5px solid #2C2C2A;padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end}
-  .header-right{text-align:right;font-size:12px;color:#666}
-  h2{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;margin-top:24px;color:#2C2C2A;border-bottom:0.5px solid #ddd;padding-bottom:6px}
-  .info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
-  .info-box{background:#F5F4F0;border-radius:8px;padding:12px 14px}
-  .info-label{font-size:11px;color:#888;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.4px}
-  .info-val{font-size:18px;font-weight:600}
-  .info-val.red{color:#72243E}
-  .info-val.green{color:#3B6D11}
-  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
-  th{text-align:left;padding:7px 10px;background:#F5F4F0;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;color:#555}
-  td{padding:7px 10px;border-bottom:0.5px solid #eee}
+  body{font-family:'Poppins',sans-serif;color:#2E2E2E;padding:40px;max-width:720px;margin:0 auto;font-size:13px;background:#fff}
+  .header{border-bottom:3px solid #2E2E2E;padding-bottom:16px;margin-bottom:28px}
+  .tienda-title{font-size:28px;font-weight:700;letter-spacing:1px;color:#2E2E2E;margin-bottom:4px}
+  .resumen-titulo{font-size:16px;font-weight:600;color:#2E2E2E;margin-bottom:2px}
+  .resumen-sub{font-size:13px;color:#666}
+  .meta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+  .meta-right{text-align:right;font-size:12px;color:#888}
+  .totales{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:28px}
+  .tot-box{border:1.5px solid #eee;border-radius:8px;padding:12px 14px}
+  .tot-box.dark{background:#2E2E2E;border-color:#2E2E2E}
+  .tot-box.lila{background:#6B6399;border-color:#6B6399}
+  .tot-label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;font-weight:600}
+  .tot-box.dark .tot-label,.tot-box.lila .tot-label{color:rgba(255,255,255,0.6)}
+  .tot-val{font-size:20px;font-weight:700;color:#2E2E2E}
+  .tot-box.dark .tot-val,.tot-box.lila .tot-val{color:#fff}
+  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#2E2E2E;margin-bottom:8px;margin-top:24px;padding-bottom:6px;border-bottom:1px solid #eee}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead tr{background:#f5f5f5}
+  th{padding:9px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#555;border-bottom:1.5px solid #ddd}
+  td{padding:9px 10px;border-bottom:1px solid #f0f0f0;color:#2E2E2E}
   tr:last-child td{border-bottom:none}
-  .footer{margin-top:40px;padding-top:16px;border-top:0.5px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
-  @media print{body{padding:20px}.no-print{display:none}}
-  .print-btn{background:#2C2C2A;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;cursor:pointer;margin-bottom:24px;display:inline-block}
-  .print-btn:hover{background:#444}
+  .total-row td{font-weight:700;background:#f9f9f9;border-top:1.5px solid #ddd;padding:10px}
+  .footer{margin-top:36px;padding-top:14px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
+  .print-btn{background:#2E2E2E;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;cursor:pointer;margin-bottom:24px;font-family:'Poppins',sans-serif;font-weight:600}
+  @media print{.no-print{display:none}body{padding:20px}}
 </style>
 </head>
 <body>
 <button class="print-btn no-print" onclick="window.print()">Imprimir / Guardar PDF</button>
 
 <div class="header">
-  <div>
-    <div class="logo">Candela</div>
-    <div style="font-size:12px;color:#888">Tienda de ropa</div>
+  <div class="tienda-title">TIENDA CANDELA</div>
+  <div class="resumen-titulo">Resumen de cuenta de ${c.nombre}</div>
+  <div class="resumen-sub">Mes de ${nombreMes} de ${anio}</div>
+</div>
+
+<div class="meta-right" style="margin-bottom:20px">
+  ${c.tel?`<div>Tel: ${c.tel}</div>`:''}
+  ${c.dir?`<div>${c.dir}${c.loc?', '+c.loc:''}</div>`:''}
+  <div>Emitido el ${fechaHoy}</div>
+</div>
+
+<div class="totales">
+  <div class="tot-box dark">
+    <div class="tot-label">Total comprado</div>
+    <div class="tot-val">${fmt(totalCompras)}</div>
   </div>
-  <div class="header-right">
-    <div style="font-weight:500;font-size:14px">${c.nombre}</div>
-    ${c.tel?`<div>${c.tel}</div>`:''}
-    <div style="margin-top:4px">Emitido el ${fechaHoy}</div>
+  <div class="tot-box lila">
+    <div class="tot-label">Comprado este mes</div>
+    <div class="tot-val">${fmt(totalMes)}</div>
+  </div>
+  <div class="tot-box" style="border-color:${c.deuda>0?'#9b4444':'#4a7c59'};background:${c.deuda>0?'#9b4444':'#4a7c59'}">
+    <div class="tot-label" style="color:rgba(255,255,255,0.65)">Deuda pendiente</div>
+    <div class="tot-val" style="color:#fff">${fmt(c.deuda||0)}</div>
   </div>
 </div>
 
-<div class="info-grid">
-  <div class="info-box">
-    <div class="info-label">Total comprado</div>
-    <div class="info-val">${fmt(totalCompras)}</div>
-  </div>
-  <div class="info-box">
-    <div class="info-label">Comprado este mes</div>
-    <div class="info-val">${fmt(totalMes)}</div>
-  </div>
-  <div class="info-box">
-    <div class="info-label">Deuda pendiente</div>
-    <div class="info-val ${c.deuda>0?'red':'green'}">${fmt(c.deuda||0)}</div>
-  </div>
-</div>
-
-<h2>Compras de ${nombreMes}</h2>
+<div class="section-title">Compras de ${nombreMes} de ${anio}</div>
 <table>
-  <thead><tr><th>Fecha</th><th>Detalle</th><th style="text-align:right">Monto</th><th style="text-align:center">Pago</th></tr></thead>
-  <tbody>${filasComprasMes}</tbody>
-  <tfoot><tr style="background:#F5F4F0">
-    <td colspan="2" style="font-weight:600;padding:8px 10px">Total del mes</td>
-    <td style="text-align:right;font-weight:600;padding:8px 10px">${fmt(totalMes)}</td>
-    <td></td>
-  </tr></tfoot>
+  <thead><tr>
+    <th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:center">Pago</th><th style="text-align:right">Precio</th>
+  </tr></thead>
+  <tbody>${filasPDF(comprasMes)}</tbody>
+  <tr class="total-row">
+    <td colspan="4">Total del mes</td>
+    <td style="text-align:right">${fmt(totalMes)}</td>
+  </tr>
 </table>
 
-<h2>Historial completo de compras</h2>
+<div class="section-title">Historial completo de compras</div>
 <table>
-  <thead><tr><th>Fecha</th><th>Detalle</th><th style="text-align:right">Monto</th><th style="text-align:center">Pago</th></tr></thead>
-  <tbody>${filasComprasTotal}</tbody>
-</table>
-
-<h2>Pagos recibidos</h2>
-<table>
-  <thead><tr><th>Fecha</th><th>Nota</th><th style="text-align:right">Monto</th></tr></thead>
-  <tbody>${filasPagos}</tbody>
+  <thead><tr>
+    <th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:center">Pago</th><th style="text-align:right">Precio</th>
+  </tr></thead>
+  <tbody>${filasPDF(compras.slice().reverse())}</tbody>
+  <tr class="total-row">
+    <td colspan="4">Total acumulado</td>
+    <td style="text-align:right">${fmt(totalCompras)}</td>
+  </tr>
 </table>
 
 <div class="footer">
-  <span>Tienda Candela &mdash; Comprobante generado el ${fechaHoy}</span>
-  <span>${c.deuda>0?'Deuda pendiente: '+fmt(c.deuda):'Cuenta al dia'}</span>
+  <span>Tienda Candela — Comprobante generado el ${fechaHoy}</span>
+  <span>${c.deuda>0?'Deuda pendiente: '+fmt(c.deuda):'Cuenta al día'}</span>
 </div>
 </body>
 </html>`;
