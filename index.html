@@ -240,6 +240,12 @@ tr:hover td{background:#fafafa}
   <div class="section active" id="sec-caja">
     <div class="metric-row" id="caja-metrics"></div>
 
+    <!-- TEST SUPABASE -->
+    <div id="supa-test" style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;font-family:Poppins,sans-serif">
+      <button onclick="testSupabase()" style="background:#3B2F8F;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:Poppins,sans-serif">Probar conexión Supabase</button>
+      <span id="supa-test-result" style="margin-left:8px;color:#555"></span>
+    </div>
+
     <!-- Accesos rápidos -->
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
       <button class="btn" onclick="openModal('venta')" style="background:#2e7d32;color:#fff;border-color:#2e7d32">+ Nueva venta</button>
@@ -659,19 +665,24 @@ async function load(){
 async function save(){
   // Guardar localmente primero (rápido)
   try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){}
-  // Luego sincronizar a Supabase en background
   showSync('Guardando...');
   try{
-    await Promise.all([
+    // Guardar cada tabla
+    const resultados=await Promise.all([
       supaUpsert('productos',db.productos),
       supaUpsert('ventas',db.ventas),
       supaUpsert('clientes',db.clientes),
       supaUpsert('gastos',db.gastos),
       supaUpsert('categorias',db.categorias)
     ]);
+    console.log('Supabase save OK');
     showSync('✓ Guardado');
     setTimeout(hideSync,1500);
-  }catch(e){console.error('Supabase save error:',e);showSync('⚠ Sin conexión');setTimeout(hideSync,2500);}
+  }catch(e){
+    console.error('Supabase save error:',e);
+    showSync('⚠ Error: '+e.message);
+    setTimeout(hideSync,4000);
+  }
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
 function hoy(){return new Date().toLocaleDateString('es-AR')}
@@ -1140,6 +1151,42 @@ function eliminarGasto(gid){
 /* ==============================
    RENDER
 ============================== */
+async function testSupabase(){
+  const el=document.getElementById('supa-test-result');
+  el.textContent='Probando...';
+  try{
+    // Test GET
+    const r=await fetch(`${SUPA_URL}/rest/v1/ventas?select=id&limit=1`,{
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    });
+    const txt=await r.text();
+    if(r.ok){
+      // Test INSERT
+      const r2=await fetch(`${SUPA_URL}/rest/v1/ventas`,{
+        method:'POST',
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify([{id:'__test__',data:{test:true}}])
+      });
+      if(r2.ok){
+        // Test DELETE test row
+        await fetch(`${SUPA_URL}/rest/v1/ventas?id=eq.__test__`,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+        el.textContent='✓ Conexión OK — Lectura y escritura funcionan';
+        el.style.color='#2e7d32';
+      } else {
+        const t2=await r2.text();
+        el.textContent='✗ Lectura OK pero escritura falla: '+r2.status+' '+t2.substring(0,100);
+        el.style.color='#D32F2F';
+      }
+    } else {
+      el.textContent='✗ Error de conexión: '+r.status+' '+txt.substring(0,100);
+      el.style.color='#D32F2F';
+    }
+  }catch(e){
+    el.textContent='✗ Error: '+e.message;
+    el.style.color='#D32F2F';
+  }
+}
+
 function render(){renderCaja();renderInventario();renderClientes();renderGastos();}
 
 function tipoBadge(tipo){
