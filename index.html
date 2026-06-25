@@ -372,7 +372,7 @@ tr:hover td{background:#fafafa}
 
     <div class="field"><label>Tipo de pago</label>
       <select id="venta-tipo">
-        <option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Fiado</option>
+        <option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option value="Fiado">A cuenta</option>
       </select>
     </div>
     <div class="field"><label>Nota (opcional)</label><input id="venta-nota"></div>
@@ -392,7 +392,7 @@ tr:hover td{background:#fafafa}
     <div class="field"><label>Detalle</label><input id="ev-detalle"></div>
     <div class="field"><label>Monto ($)</label><input id="ev-monto" type="number" min="0"></div>
     <div class="field"><label>Tipo de pago</label>
-      <select id="ev-tipo"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Fiado</option></select>
+      <select id="ev-tipo"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option value="Fiado">A cuenta</option></select>
     </div>
     <div class="field"><label>Nota (opcional)</label><input id="ev-nota"></div>
     <div class="modal-actions">
@@ -490,23 +490,32 @@ tr:hover td{background:#fafafa}
     <div class="field">
       <label>¿Qué querés exportar?</label>
       <div class="vtab-row" style="margin-bottom:0;flex-wrap:wrap">
-        <button class="vtab active" id="pdf-tab-fiado" onclick="setPdfTab('fiado')" style="font-size:12px">Solo fiado</button>
+        <button class="vtab active" id="pdf-tab-fiado" onclick="setPdfTab('fiado')" style="font-size:12px">A cuenta</button>
         <button class="vtab" id="pdf-tab-mes" onclick="setPdfTab('mes')" style="font-size:12px">Por mes</button>
         <button class="vtab" id="pdf-tab-todo" onclick="setPdfTab('todo')" style="font-size:12px">Historial completo</button>
       </div>
     </div>
+
+    <!-- TAB A CUENTA: selector de productos -->
     <div id="pdf-content-fiado">
-      <div style="font-size:13px;color:#888;margin-top:10px">Se exportarán todas las compras registradas como <strong>Fiado</strong> del cliente.</div>
+      <div style="font-size:13px;color:#888;margin-top:10px;margin-bottom:8px">Seleccioná qué compras a cuenta querés incluir:</div>
+      <div id="pdf-fiado-lista" style="max-height:220px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px"></div>
     </div>
+
+    <!-- TAB POR MES -->
     <div id="pdf-content-mes" style="display:none">
       <div class="field" style="margin-top:12px">
         <label>Mes</label>
         <select id="pdf-mes-sel"></select>
       </div>
+      <div style="font-size:12px;color:#888;margin-top:6px">Se exportarán todas las compras <strong>a cuenta</strong> del mes seleccionado.</div>
     </div>
+
+    <!-- TAB HISTORIAL COMPLETO -->
     <div id="pdf-content-todo" style="display:none">
       <div style="font-size:13px;color:#888;margin-top:10px">Se exportará el historial completo de compras del cliente.</div>
     </div>
+
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('exportar-pdf')">Cancelar</button>
       <button class="btn primary" onclick="generarPDF()">Generar PDF</button>
@@ -1206,14 +1215,16 @@ async function testSupabase(){
 function render(){renderCaja();renderInventario();renderClientes();renderGastos();}
 
 function tipoBadge(tipo){
+  const label={'Fiado':'A CUENTA','A cuenta':'A CUENTA','Efectivo':'EFECTIVO','Transferencia':'TRANSFERENCIA','Tarjeta':'TARJETA'}[tipo]||(tipo?tipo.toUpperCase():'');
   const estilos={
-    Efectivo:'background:#2e7d32;color:#fff',
-    Transferencia:'background:#1565C0;color:#fff',
-    Tarjeta:'background:#E65100;color:#fff',
-    Fiado:'background:#3B2F8F;color:#fff'
+    'Efectivo':'background:#2e7d32;color:#fff',
+    'Transferencia':'background:#1565C0;color:#fff',
+    'Tarjeta':'background:#E65100;color:#fff',
+    'Fiado':'background:#3B2F8F;color:#fff',
+    'A cuenta':'background:#3B2F8F;color:#fff'
   };
   const estilo=estilos[tipo]||'background:#555;color:#fff';
-  return `<span style="font-size:11px;font-weight:600;border-radius:6px;padding:4px 12px;display:inline-block;${estilo}">${tipo.toUpperCase()}</span>`;
+  return `<span style="font-size:11px;font-weight:600;border-radius:6px;padding:4px 12px;display:inline-block;${estilo}">${label}</span>`;
 }
 
 function fmtDetalle(detalle){
@@ -1362,8 +1373,8 @@ function renderClientes(){
   const totDeuda=db.clientes.reduce((s,c)=>s+(c.deuda||0),0);
   const conDeuda=db.clientes.filter(c=>c.deuda>0).length;
   document.getElementById('fiados-metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">Total fiado pendiente</div><div class="metric-val">${fmt(totDeuda)}</div></div>
-    <div class="metric" style="background:#fff;border:1.5px solid #ddd"><div class="metric-label" style="color:#555">Clientes con deuda</div><div class="metric-val" style="color:#1A1A1A">${conDeuda}</div></div>`;
+    <div class="metric"><div class="metric-label">Total a cuenta pendiente</div><div class="metric-val">${fmt(totDeuda)}</div></div>
+    <div class="metric" style="background:#fff;border:1.5px solid #ddd"><div class="metric-label" style="color:#555">Clientes con saldo</div><div class="metric-val" style="color:#1A1A1A">${conDeuda}</div></div>`;
   const q=(document.getElementById('cli-search').value||'').toLowerCase().trim();
   let lista=db.clientes.slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
   if(q)lista=lista.filter(c=>c.nombre.toLowerCase().includes(q)||(c.tel||'').includes(q));
@@ -1491,6 +1502,25 @@ function exportarComprobante(cid){
   setPdfTab('fiado');
 
   const compras=c.compras||[];
+
+  // Poblar lista de compras a cuenta con checkboxes
+  const fiadoLista=document.getElementById('pdf-fiado-lista');
+  const soloCuenta=compras.filter(co=>co.tipo==='Fiado'||co.tipo==='A cuenta');
+  if(!soloCuenta.length){
+    fiadoLista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Sin compras a cuenta registradas</div>';
+  } else {
+    fiadoLista.innerHTML=soloCuenta.slice().reverse().map((co,i)=>{
+      const realIdx=compras.indexOf(co);
+      const matchTalle=co.detalle.match(/\(([^)]+)\)/);
+      const talle=matchTalle?matchTalle[1].toUpperCase():'';
+      const nombre=co.detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim();
+      return `<label style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:13px">
+        <input type="checkbox" data-idx="${realIdx}" checked style="width:16px;height:16px;accent-color:#1A1A1A">
+        <span><strong>${nombre}${talle?' ('+talle+')':''}</strong> <span style="color:#888">${co.fecha} · ${fmt(co.total)}</span></span>
+      </label>`;
+    }).join('');
+  }
+
   // Poblar selector de meses
   const mesesSet=new Set();
   compras.forEach(co=>{
@@ -1510,22 +1540,29 @@ function generarPDF(){
   const cid=document.getElementById('pdf-cliente-id').value;
   const c=db.clientes.find(x=>x.id===cid);if(!c)return;
   const compras=c.compras||[];
-  let seleccionadas=[];
+  let paraExportar=[];
   let tituloSeccion='';
 
   if(pdfTab==='fiado'){
-    seleccionadas=compras.filter(co=>co.tipo==='Fiado');
-    tituloSeccion='Compras fiadas';
+    // Compras a cuenta seleccionadas via checkbox
+    const checks=document.querySelectorAll('#pdf-fiado-lista input[type=checkbox]:checked');
+    checks.forEach(ch=>{
+      const idx=parseInt(ch.getAttribute('data-idx'));
+      if(compras[idx]) paraExportar.push(compras[idx]);
+    });
+    if(!paraExportar.length){alert('Seleccioná al menos una compra a cuenta.');return;}
+    tituloSeccion='A cuenta';
   } else if(pdfTab==='mes'){
     const mesVal=document.getElementById('pdf-mes-sel').value;
     const [mm,yy]=mesVal.split('/');
-    seleccionadas=compras.filter(co=>{
+    paraExportar=compras.filter(co=>{
       const p=co.fecha.split('/');
-      return p.length>=3 && p[1].padStart(2,'0')===mm && p[2]===yy;
+      const esMes=p.length>=3 && p[1].padStart(2,'0')===mm && p[2]===yy;
+      return esMes && (co.tipo==='Fiado'||co.tipo==='A cuenta');
     });
     tituloSeccion='Mes de '+new Date(yy,mm-1,1).toLocaleString('es-AR',{month:'long',year:'numeric'});
   } else {
-    seleccionadas=compras.slice();
+    paraExportar=compras.slice();
     tituloSeccion='Historial completo';
   }
 
@@ -1540,17 +1577,9 @@ function generarPDF(){
     return {producto,talle};
   }
 
-  // Solo fiado
-  const paraExportar=pdfTab==='fiado'?seleccionadas.filter(co=>co.tipo==='Fiado'):seleccionadas;
+  // Total: solo la suma de las compras exportadas, sin doble conteo
   const totalExport=paraExportar.reduce((s,x)=>s+x.total,0);
-  const totalACobrar=totalExport+(pdfTab==='fiado'?c.deuda||0:0);
-
-  function parsearDetalle(detalle){
-    const matchTalle=detalle.match(/\(([^)]+)\)/);
-    const talle=matchTalle?matchTalle[1].toUpperCase():'—';
-    const producto=detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim()||detalle;
-    return {producto,talle};
-  }
+  const totalACobrar=totalExport;
 
   const filas=paraExportar.length
     ? paraExportar.map(co=>{
@@ -1562,7 +1591,7 @@ function generarPDF(){
           <td style="text-align:right;font-weight:600">${fmt(co.total)}</td>
         </tr>`;
       }).join('')
-    : `<tr><td colspan="4" style="text-align:center;color:#aaa;padding:14px">Sin compras fiadas en este período</td></tr>`;
+    : `<tr><td colspan="4" style="text-align:center;color:#aaa;padding:14px">Sin compras a cuenta en este período</td></tr>`;
 
   const html=`<!DOCTYPE html>
 <html lang="es">
@@ -1613,7 +1642,7 @@ function generarPDF(){
   <span>Período: ${tituloSeccion}</span>
   <span>Emitido el ${fechaHoy}</span>
 </div>
-<div class="section-hdr">${pdfTab==='fiado'?'Detalle de compras fiadas':tituloSeccion}</div>
+<div class="section-hdr">${pdfTab==='fiado'?'Detalle de compras a cuenta':tituloSeccion}</div>
 <table>
   <thead>
     <tr><th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:right">Monto</th></tr>
@@ -1621,8 +1650,7 @@ function generarPDF(){
   <tbody>${filas}</tbody>
 </table>
 <div class="total-section">
-  <div class="total-row"><span>Subtotal compras</span><span>${fmt(totalExport)}</span></div>
-  ${pdfTab==='fiado'&&c.deuda>0?`<div class="total-row deuda"><span>+ Deuda pendiente anterior</span><span>${fmt(c.deuda)}</span></div>`:''}
+  <div class="total-row"><span>Subtotal</span><span>${fmt(totalExport)}</span></div>
   <div class="total-row final"><span>TOTAL A COBRAR</span><span>${fmt(totalACobrar)}</span></div>
 </div>
 </body>
