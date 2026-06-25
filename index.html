@@ -1502,21 +1502,52 @@ function exportarComprobante(cid){
   setPdfTab('fiado');
 
   const compras=c.compras||[];
+  const pagos=c.pagos||[];
 
-  // Poblar lista de compras a cuenta con checkboxes
+  // Calcular cuánto fue pagado en total
+  const totalPagado=pagos.reduce((s,p)=>s+p.monto,0);
+
+  // Obtener compras a cuenta ordenadas de más vieja a más nueva
+  const cuentaOrdenadas=compras
+    .filter(co=>co.tipo==='Fiado'||co.tipo==='A cuenta')
+    .slice() // no mutar original
+    .sort((a,b)=>{
+      // ordenar por fecha (d/m/yyyy)
+      const pa=a.fecha.split('/'),pb=b.fecha.split('/');
+      const da=new Date(pa[2],pa[1]-1,pa[0]),db2=new Date(pb[2],pb[1]-1,pb[0]);
+      return da-db2;
+    });
+
+  // Aplicar pagos de más viejo a más nuevo
+  let restante=totalPagado;
+  const conEstado=cuentaOrdenadas.map(co=>{
+    if(restante<=0) return {...co,saldo:co.total,pagada:false};
+    if(restante>=co.total){restante-=co.total;return {...co,saldo:0,pagada:true};}
+    const saldo=co.total-restante;restante=0;
+    return {...co,saldo,pagada:false,parcial:true};
+  });
+
+  // Solo mostrar las no completamente pagadas
+  const sinPagar=conEstado.filter(co=>!co.pagada);
+
   const fiadoLista=document.getElementById('pdf-fiado-lista');
-  const soloCuenta=compras.filter(co=>co.tipo==='Fiado'||co.tipo==='A cuenta');
-  if(!soloCuenta.length){
-    fiadoLista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Sin compras a cuenta registradas</div>';
+  if(!sinPagar.length){
+    fiadoLista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">No hay compras a cuenta pendientes de cobro.</div>';
   } else {
-    fiadoLista.innerHTML=soloCuenta.slice().reverse().map((co,i)=>{
-      const realIdx=compras.indexOf(co);
+    fiadoLista.innerHTML=sinPagar.map(co=>{
+      const realIdx=compras.indexOf(compras.find(x=>x===co||x.id===co.id));
       const matchTalle=co.detalle.match(/\(([^)]+)\)/);
       const talle=matchTalle?matchTalle[1].toUpperCase():'';
       const nombre=co.detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim();
+      const montoPendiente=co.saldo||co.total;
+      const esParcial=co.parcial;
       return `<label style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:13px">
-        <input type="checkbox" data-idx="${realIdx}" checked style="width:16px;height:16px;accent-color:#1A1A1A">
-        <span><strong>${nombre}${talle?' ('+talle+')':''}</strong> <span style="color:#888">${co.fecha} · ${fmt(co.total)}</span></span>
+        <input type="checkbox" data-idx="${compras.indexOf(compras.find(x=>x.id===co.id||x===co))}" data-monto="${montoPendiente}" checked style="width:16px;height:16px;accent-color:#1A1A1A">
+        <span>
+          <strong>${nombre}${talle?' ('+talle+')':''}</strong>
+          ${esParcial?'<span style="font-size:11px;color:#E65100;margin-left:4px">(pago parcial)</span>':''}
+          <span style="color:#888;display:block;font-size:12px">${co.fecha} · Pendiente: ${fmt(montoPendiente)}</span>
+        </span>
       </label>`;
     }).join('');
   }
@@ -1544,11 +1575,15 @@ function generarPDF(){
   let tituloSeccion='';
 
   if(pdfTab==='fiado'){
-    // Compras a cuenta seleccionadas via checkbox
+    // Compras a cuenta seleccionadas via checkbox — usar monto pendiente real
     const checks=document.querySelectorAll('#pdf-fiado-lista input[type=checkbox]:checked');
     checks.forEach(ch=>{
       const idx=parseInt(ch.getAttribute('data-idx'));
-      if(compras[idx]) paraExportar.push(compras[idx]);
+      const montoPendiente=parseFloat(ch.getAttribute('data-monto'));
+      if(compras[idx]){
+        const co={...compras[idx],total:montoPendiente};
+        paraExportar.push(co);
+      }
     });
     if(!paraExportar.length){alert('Seleccioná al menos una compra a cuenta.');return;}
     tituloSeccion='A cuenta';
