@@ -1316,6 +1316,15 @@ function eliminarVentaYVolver(vid){
   save();verTodasVentas();
 }
 
+// Delegación para eliminar pagos recibidos
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('[data-deshacer-cid]');
+  if(!btn)return;
+  const cid=btn.getAttribute('data-deshacer-cid');
+  const pid=btn.getAttribute('data-deshacer-pid');
+  deshacerPago(cid,pid);
+});
+
 // Delegación para lápiz editar venta
 document.addEventListener('click',function(e){
   const btn=e.target.closest('[data-editar-venta]');
@@ -1456,7 +1465,7 @@ function renderClientes(){
               <span style="color:#fff">${pg.fecha}${pg.nota?' · '+pg.nota:''}</span>
               <div style="display:flex;align-items:center;gap:8px">
                 <span style="font-weight:600;color:#fff">${fmt(pg.monto)}</span>
-                <button onclick="deshacerPago('${c.id}','${pg.id||''}'})" style="background:none;border:none;cursor:pointer;font-size:20px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
+                <button data-deshacer-cid="${c.id}" data-deshacer-pid="${pg.id||''}" style="background:none;border:none;cursor:pointer;font-size:20px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
               </div>
             </div>`).join('')}`:''}
         </div>
