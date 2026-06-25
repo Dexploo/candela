@@ -598,16 +598,38 @@ async function supaGet(tabla){
 
 async function supaUpsert(tabla,items){
   const headers={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};
-  // Borrar todo y reinsertar (sync completo)
-  await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=neq.___none___`,{method:'DELETE',headers});
-  if(!items.length) return;
+  if(!items.length){
+    // Si no hay items, borrar todo con id mayor a vacío (truco para borrar sin filtro)
+    await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=gte.`,{method:'DELETE',headers});
+    return;
+  }
+  // Usar upsert: inserta o actualiza por ID
   const rows=items.map(item=>({id:item.id||uid(),data:item}));
-  const r=await fetch(`${SUPA_URL}/rest/v1/${tabla}`,{
-    method:'POST',
-    headers:{...headers,'Prefer':'return=minimal'},
-    body:JSON.stringify(rows)
-  });
-  if(!r.ok){const t=await r.text();console.error('Supabase upsert error',tabla,r.status,t);}
+  // Primero obtener IDs actuales en Supabase para borrar los que ya no existen
+  const existR=await fetch(`${SUPA_URL}/rest/v1/${tabla}?select=id`,{headers});
+  if(existR.ok){
+    const existentes=await existR.json();
+    const idsNuevos=new Set(rows.map(r=>r.id));
+    const aEliminar=existentes.filter(e=>!idsNuevos.has(e.id));
+    for(const e of aEliminar){
+      await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=eq.${encodeURIComponent(e.id)}`,{method:'DELETE',headers});
+    }
+  }
+  // Upsert todos los items en lotes de 50
+  for(let i=0;i<rows.length;i+=50){
+    const batch=rows.slice(i,i+50);
+    const r=await fetch(`${SUPA_URL}/rest/v1/${tabla}`,{
+      method:'POST',
+      headers:{...headers,'Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(batch)
+    });
+    if(!r.ok){
+      const t=await r.text();
+      console.error('Supabase upsert error',tabla,r.status,t);
+      throw new Error(`Error guardando ${tabla}: ${r.status} ${t.substring(0,100)}`);
+    }
+  }
+  console.log(`✓ ${tabla}: ${items.length} items sincronizados`);
 }
 
 async function supaDelete(tabla,id){
