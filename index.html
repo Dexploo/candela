@@ -30,7 +30,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);fon
 /* SECTIONS */
 .section{display:none}
 .section.active{display:block}
-.section{padding:20px 24px 80px}
+.section{padding:14px 12px 80px}
 
 /* On larger screens, center content */
 @media(min-width:860px){
@@ -39,6 +39,9 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);fon
   .nav{padding:0 calc((100% - 800px)/2)}
   .nav button{flex:none;padding:12px 28px}
 }
+
+/* TABLE — scrollable on mobile */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
 
 /* CARDS */
 .card{background:var(--white);border:1px solid #e0e0e0;border-radius:14px;padding:14px 16px;margin-bottom:12px}
@@ -67,6 +70,13 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);fon
 .btn.sm{padding:4px 12px;font-size:12px}
 .btn.outline-dark{border-color:#ccc;color:var(--black)}
 .btn.outline-dark:hover{background:#f0f0f0}
+@media(max-width:480px){
+  .btn{padding:6px 10px;font-size:12px}
+  .btn.sm{padding:3px 8px;font-size:11px}
+  .metric-val{font-size:18px}
+  td{padding:8px 8px;font-size:12px}
+  th{padding:8px 8px;font-size:11px}
+}
 
 /* TABLE */
 table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
@@ -150,7 +160,10 @@ tr:hover td{background:#fafafa}
 
 /* CLIENTE CARD */
 .cli-card{background:#fff;border:1.5px solid #e0e0e0;border-radius:14px;margin-bottom:10px;overflow:hidden}
-.cli-card-header{padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.cli-card-header{padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
+@media(max-width:480px){
+  .cli-card-header{flex-wrap:wrap;gap:6px}
+}
 .cli-card-header:hover{background:#fafafa}
 .cli-card-body{display:none;padding:0 16px 14px;border-top:1px solid #f0f0f0}
 .cli-card-body.open{display:block}
@@ -237,13 +250,13 @@ tr:hover td{background:#fafafa}
     <div class="section-title" style="color:#1A1A1A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">
       VENTAS DE HOY
     </div>
-    <div class="card" style="padding:0;margin-bottom:24px">
+    <div class="table-wrap"><div class="card" style="padding:0;margin-bottom:24px">
       <table><thead><tr><th>Detalle</th><th>Monto</th><th>Tipo</th><th></th></tr></thead>
       <tbody id="ventas-hoy-tbody"></tbody></table>
     </div>
 
     <div class="section-title" style="margin-top:0;color:#1A1A1A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">HISTORIAL DE VENTAS</div>
-    <div class="card" style="padding:0">
+    <div class="table-wrap"><div class="card" style="padding:0">
       <table><thead><tr><th>Fecha</th><th>Detalle</th><th>Monto</th><th>Tipo</th><th></th></tr></thead>
       <tbody id="ventas-hist-tbody"></tbody></table>
     </div>
@@ -258,7 +271,7 @@ tr:hover td{background:#fafafa}
       TODAS LAS VENTAS
       <button class="btn" onclick="showSection('caja')">← Volver</button>
     </div>
-    <div class="card" style="padding:0">
+    <div class="table-wrap"><div class="card" style="padding:0">
       <table><thead><tr><th>Fecha</th><th>Detalle</th><th>Monto</th><th>Tipo</th><th></th></tr></thead>
       <tbody id="ventas-todas-tbody"></tbody></table>
     </div>
@@ -274,7 +287,7 @@ tr:hover td{background:#fafafa}
       </div>
     </div>
     <div class="cat-tabs" id="cat-tabs"></div>
-    <div class="card" style="padding:0">
+    <div class="table-wrap"><div class="card" style="padding:0">
       <table><thead><tr><th>Producto</th><th>Talle</th><th>Stock</th><th>Precio</th><th></th></tr></thead>
       <tbody id="inv-tbody"></tbody></table>
     </div>
@@ -301,7 +314,7 @@ tr:hover td{background:#fafafa}
       GASTOS DEL MES
       <button class="btn primary" onclick="openModal('gasto')">+ Registrar</button>
     </div>
-    <div class="card" style="padding:0">
+    <div class="table-wrap"><div class="card" style="padding:0">
       <table><thead><tr><th>Descripcion</th><th>Categoria</th><th>Fecha</th><th>Monto</th><th></th></tr></thead>
       <tbody id="gastos-tbody"></tbody></table>
     </div>
@@ -476,22 +489,23 @@ tr:hover td{background:#fafafa}
     <input type="hidden" id="pdf-cliente-id">
     <div class="field">
       <label>¿Qué querés exportar?</label>
-      <div class="vtab-row" style="margin-bottom:0">
-        <button class="vtab active" id="pdf-tab-mes" onclick="setPdfTab('mes')">Por mes</button>
-        <button class="vtab" id="pdf-tab-sel" onclick="setPdfTab('sel')">Seleccionar compras</button>
+      <div class="vtab-row" style="margin-bottom:0;flex-wrap:wrap">
+        <button class="vtab active" id="pdf-tab-fiado" onclick="setPdfTab('fiado')" style="font-size:12px">Solo fiado</button>
+        <button class="vtab" id="pdf-tab-mes" onclick="setPdfTab('mes')" style="font-size:12px">Por mes</button>
+        <button class="vtab" id="pdf-tab-todo" onclick="setPdfTab('todo')" style="font-size:12px">Historial completo</button>
       </div>
     </div>
-    <div id="pdf-content-mes">
+    <div id="pdf-content-fiado">
+      <div style="font-size:13px;color:#888;margin-top:10px">Se exportarán todas las compras registradas como <strong>Fiado</strong> del cliente.</div>
+    </div>
+    <div id="pdf-content-mes" style="display:none">
       <div class="field" style="margin-top:12px">
         <label>Mes</label>
         <select id="pdf-mes-sel"></select>
       </div>
     </div>
-    <div id="pdf-content-sel" style="display:none">
-      <div class="field" style="margin-top:12px">
-        <label>Seleccioná las compras</label>
-        <div id="pdf-compras-lista" style="max-height:220px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:8px"></div>
-      </div>
+    <div id="pdf-content-todo" style="display:none">
+      <div style="font-size:13px;color:#888;margin-top:10px">Se exportará el historial completo de compras del cliente.</div>
     </div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('exportar-pdf')">Cancelar</button>
@@ -1228,7 +1242,7 @@ function renderClientes(){
           <!-- Resumen cuenta -->
           <div class="metric-row" style="margin-bottom:12px">
             <div class="metric" style="background:#1A1A1A;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Total comprado</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(totalCompras)}</div></div>
-            <div class="metric" style="background:#D32F2F;border:none"><div class="metric-label" style="color:rgba(255,255,255,0.65)">Deuda pendiente</div><div style="font-size:18px;font-weight:600;color:#fff">${fmt(c.deuda||0)}</div></div>
+            <div class="metric" style="background:${c.deuda>0?'#D32F2F':'#fff'};border:${c.deuda>0?'none':'1.5px solid #e0e0e0'}"><div class="metric-label" style="color:${c.deuda>0?'rgba(255,255,255,0.65)':'#555'}">Deuda pendiente</div><div style="font-size:18px;font-weight:600;color:${c.deuda>0?'#fff':'#1A1A1A'}">${fmt(c.deuda||0)}</div></div>
           </div>
 
           <!-- Acciones pago -->
@@ -1311,50 +1325,36 @@ function renderGastos(){
 /* ==============================
    EXPORTAR COMPROBANTE PDF
 ============================== */
-let pdfTab='mes';
+let pdfTab='fiado';
 
 function setPdfTab(t){
   pdfTab=t;
-  document.getElementById('pdf-tab-mes').classList.toggle('active',t==='mes');
-  document.getElementById('pdf-tab-sel').classList.toggle('active',t==='sel');
-  document.getElementById('pdf-content-mes').style.display=t==='mes'?'':'none';
-  document.getElementById('pdf-content-sel').style.display=t==='sel'?'':'none';
+  ['fiado','mes','todo'].forEach(k=>{
+    const btn=document.getElementById('pdf-tab-'+k);
+    const cont=document.getElementById('pdf-content-'+k);
+    if(btn) btn.classList.toggle('active',k===t);
+    if(cont) cont.style.display=k===t?'':'none';
+  });
 }
 
 function exportarComprobante(cid){
   const c=db.clientes.find(x=>x.id===cid);if(!c)return;
   document.getElementById('pdf-cliente-id').value=cid;
-  pdfTab='mes';
-  setPdfTab('mes');
+  pdfTab='fiado';
+  setPdfTab('fiado');
 
-  // Poblar selector de meses disponibles
   const compras=c.compras||[];
+  // Poblar selector de meses
   const mesesSet=new Set();
   compras.forEach(co=>{
     const p=co.fecha.split('/');
     if(p.length>=3) mesesSet.add(p[1].padStart(2,'0')+'/'+p[2]);
   });
   const ahora=new Date();
-  const mesActual=String(ahora.getMonth()+1).padStart(2,'0')+'/'+ahora.getFullYear();
-  mesesSet.add(mesActual);
+  mesesSet.add(String(ahora.getMonth()+1).padStart(2,'0')+'/'+ahora.getFullYear());
   const meses=[...mesesSet].sort().reverse();
-  const nombreMes=(m)=>{
-    const [mm,yy]=m.split('/');
-    return new Date(yy,mm-1,1).toLocaleString('es-AR',{month:'long',year:'numeric'});
-  };
+  const nombreMes=(m)=>{const [mm,yy]=m.split('/');return new Date(yy,mm-1,1).toLocaleString('es-AR',{month:'long',year:'numeric'});};
   document.getElementById('pdf-mes-sel').innerHTML=meses.map(m=>`<option value="${m}">${nombreMes(m)}</option>`).join('');
-
-  // Poblar lista de compras seleccionables
-  const lista=document.getElementById('pdf-compras-lista');
-  if(!compras.length){
-    lista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Sin compras registradas</div>';
-  } else {
-    lista.innerHTML=compras.slice().reverse().map((co,i)=>`
-      <label style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:13px">
-        <input type="checkbox" data-idx="${compras.length-1-i}" style="width:16px;height:16px;accent-color:#3B2F8F">
-        <span><strong>${co.detalle}</strong> <span style="color:#888">${co.fecha} · ${fmt(co.total)}</span></span>
-      </label>`).join('');
-  }
 
   document.getElementById('modal-exportar-pdf').classList.add('open');
 }
@@ -1366,7 +1366,10 @@ function generarPDF(){
   let seleccionadas=[];
   let tituloSeccion='';
 
-  if(pdfTab==='mes'){
+  if(pdfTab==='fiado'){
+    seleccionadas=compras.filter(co=>co.tipo==='Fiado');
+    tituloSeccion='Compras fiadas';
+  } else if(pdfTab==='mes'){
     const mesVal=document.getElementById('pdf-mes-sel').value;
     const [mm,yy]=mesVal.split('/');
     seleccionadas=compras.filter(co=>{
@@ -1375,21 +1378,13 @@ function generarPDF(){
     });
     tituloSeccion='Mes de '+new Date(yy,mm-1,1).toLocaleString('es-AR',{month:'long',year:'numeric'});
   } else {
-    const checks=document.querySelectorAll('#pdf-compras-lista input[type=checkbox]:checked');
-    checks.forEach(ch=>{
-      const idx=parseInt(ch.getAttribute('data-idx'));
-      if(compras[idx]) seleccionadas.push(compras[idx]);
-    });
-    if(!seleccionadas.length){alert('Seleccioná al menos una compra.');return;}
-    tituloSeccion='Compras seleccionadas';
+    seleccionadas=compras.slice();
+    tituloSeccion='Historial completo';
   }
 
   closeModal('exportar-pdf');
 
   const fechaHoy=hoy();
-  const totalCompras=seleccionadas.reduce((s,x)=>s+x.total,0);
-  const deudaInicial=c.deudaInicial||0;
-  const totalConDeuda=totalCompras+deudaInicial+(c.deuda||0);
 
   function parsearDetalle(detalle){
     const matchTalle=detalle.match(/\(([^)]+)\)/);
@@ -1398,18 +1393,29 @@ function generarPDF(){
     return {producto,talle};
   }
 
-  const filas=seleccionadas.length
-    ? seleccionadas.map(co=>{
+  // Solo fiado
+  const paraExportar=pdfTab==='fiado'?seleccionadas.filter(co=>co.tipo==='Fiado'):seleccionadas;
+  const totalExport=paraExportar.reduce((s,x)=>s+x.total,0);
+  const totalACobrar=totalExport+(pdfTab==='fiado'?c.deuda||0:0);
+
+  function parsearDetalle(detalle){
+    const matchTalle=detalle.match(/\(([^)]+)\)/);
+    const talle=matchTalle?matchTalle[1].toUpperCase():'—';
+    const producto=detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim()||detalle;
+    return {producto,talle};
+  }
+
+  const filas=paraExportar.length
+    ? paraExportar.map(co=>{
         const {producto,talle}=parsearDetalle(co.detalle);
         return `<tr>
           <td>${co.fecha}</td>
           <td>${producto}</td>
           <td style="text-align:center">${talle}</td>
-          <td style="text-align:center">${co.tipo.toUpperCase()}</td>
           <td style="text-align:right;font-weight:600">${fmt(co.total)}</td>
         </tr>`;
       }).join('')
-    : `<tr><td colspan="5" style="text-align:center;color:#aaa;padding:14px">Sin compras en este período</td></tr>`;
+    : `<tr><td colspan="4" style="text-align:center;color:#aaa;padding:14px">Sin compras fiadas en este período</td></tr>`;
 
   const html=`<!DOCTYPE html>
 <html lang="es">
@@ -1419,29 +1425,25 @@ function generarPDF(){
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Poppins',sans-serif;color:#1A1A1A;padding:40px;max-width:720px;margin:0 auto;font-size:13px;background:#fff}
-  .back-btn{background:#1A1A1A;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;margin-bottom:20px;font-family:'Poppins',sans-serif;font-weight:600;display:inline-block}
-  .print-btn{background:#3B2F8F;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;margin-bottom:20px;margin-left:8px;font-family:'Poppins',sans-serif;font-weight:600;display:inline-block}
-  .header-bar{background:#3B2F8F;color:#fff;padding:20px 28px;border-radius:12px;margin-bottom:24px}
-  .tienda-title{font-size:26px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
-  .resumen-sub{font-size:14px;opacity:0.85}
-  .info-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;color:#666;margin-top:16px}
-  .totales{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:20px 0}
-  .tot-box{border:1.5px solid #eee;border-radius:10px;padding:13px 16px}
-  .tot-box.dark{background:#1A1A1A;border-color:#1A1A1A}
-  .tot-box.red{background:#D32F2F;border-color:#D32F2F}
-  .tot-label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:4px;font-weight:600}
-  .tot-box.dark .tot-label,.tot-box.red .tot-label{color:rgba(255,255,255,0.6)}
-  .tot-val{font-size:19px;font-weight:700;color:#1A1A1A}
-  .tot-box.dark .tot-val,.tot-box.red .tot-val{color:#fff}
-  .section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#1A1A1A;margin-bottom:8px;margin-top:20px;padding-bottom:6px;border-bottom:1.5px solid #eee}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  thead tr{background:#f5f5f5}
-  th{padding:9px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#555;border-bottom:1.5px solid #ddd}
-  td{padding:9px 10px;border-bottom:1px solid #f0f0f0;color:#1A1A1A}
-  tr:last-child td{border-bottom:none}
-  .total-row td{font-weight:700;background:#f9f9f9;border-top:1.5px solid #ddd;padding:10px}
-  .footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}
+  body{font-family:'Poppins',sans-serif;color:#1A1A1A;padding:40px;max-width:680px;margin:0 auto;font-size:13px;background:#fff}
+  .no-print{margin-bottom:24px;display:flex;gap:8px}
+  .back-btn{background:#1A1A1A;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600}
+  .print-btn{background:#fff;color:#1A1A1A;border:1.5px solid #1A1A1A;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600}
+  .top-bar{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1A1A1A;padding-bottom:16px;margin-bottom:20px}
+  .tienda{font-size:20px;font-weight:700;letter-spacing:1px;margin-bottom:2px}
+  .tienda-sub{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px}
+  .cli-block{text-align:right}
+  .cli-name{font-size:15px;font-weight:600}
+  .cli-sub{font-size:11px;color:#888;margin-top:3px}
+  .meta-row{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:24px;border-bottom:1px solid #eee;padding-bottom:12px}
+  .section-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#1A1A1A;margin-bottom:8px;margin-top:20px}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin:0 auto}
+  th{padding:9px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;border-bottom:1.5px solid #1A1A1A}
+  td{padding:9px 10px;border-bottom:1px solid #eee;color:#1A1A1A}
+  .total-section{margin-top:16px}
+  .total-row{display:flex;justify-content:space-between;padding:9px 10px;font-size:13px;border-bottom:1px solid #eee}
+  .total-row.deuda{color:#555}
+  .total-row.final{background:#1A1A1A;color:#fff;font-weight:700;padding:11px 12px;margin-top:6px}
   @media print{.no-print{display:none}body{padding:20px}}
 </style>
 </head>
@@ -1450,52 +1452,31 @@ function generarPDF(){
   <button class="back-btn" onclick="window.close()">← Volver</button>
   <button class="print-btn" onclick="window.print()">Imprimir / Guardar PDF</button>
 </div>
-
-<div class="header-bar">
-  <div class="tienda-title">TIENDA CANDELA</div>
-  <div class="resumen-sub">Resumen de cuenta de <strong>${c.nombre}</strong> &mdash; ${tituloSeccion}</div>
+<div class="top-bar">
+  <div>
+    <div class="tienda">TIENDA CANDELA</div>
+    <div class="tienda-sub">Comprobante de cuenta</div>
+  </div>
+  <div class="cli-block">
+    <div class="cli-name">${c.nombre}</div>
+    ${c.tel?`<div class="cli-sub">${c.tel}${c.dir?' &middot; '+c.dir+(c.loc?', '+c.loc:''):''}</div>`:''}
+  </div>
 </div>
-
-<div class="info-row">
-  <span>${c.tel?'Tel: '+c.tel:''}${c.dir?' | '+c.dir+(c.loc?', '+c.loc:''):''}</span>
+<div class="meta-row">
+  <span>Período: ${tituloSeccion}</span>
   <span>Emitido el ${fechaHoy}</span>
 </div>
-
-<div class="totales">
-  <div class="tot-box dark">
-    <div class="tot-label">Total compras</div>
-    <div class="tot-val">${fmt(totalCompras)}</div>
-  </div>
-  <div class="tot-box" style="border-color:#1565C0">
-    <div class="tot-label" style="color:#1565C0">Deuda pendiente</div>
-    <div class="tot-val" style="color:#1565C0">${fmt(c.deuda||0)}</div>
-  </div>
-  <div class="tot-box red">
-    <div class="tot-label">TOTAL A COBRAR</div>
-    <div class="tot-val">${fmt(totalCompras+(c.deuda||0))}</div>
-  </div>
-</div>
-
-<div class="section-title">${tituloSeccion}</div>
+<div class="section-hdr">${pdfTab==='fiado'?'Detalle de compras fiadas':tituloSeccion}</div>
 <table>
-  <thead><tr>
-    <th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:center">Pago</th><th style="text-align:right">Precio</th>
-  </tr></thead>
+  <thead>
+    <tr><th>Fecha</th><th>Producto</th><th style="text-align:center">Talle</th><th style="text-align:right">Monto</th></tr>
+  </thead>
   <tbody>${filas}</tbody>
-  <tr class="total-row">
-    <td colspan="4">Subtotal compras</td>
-    <td style="text-align:right">${fmt(totalCompras)}</td>
-  </tr>
-  ${c.deuda>0?`<tr class="total-row"><td colspan="4" style="color:#D32F2F">+ Deuda pendiente</td><td style="text-align:right;color:#D32F2F">${fmt(c.deuda)}</td></tr>`:''}
-  <tr style="background:#1A1A1A">
-    <td colspan="4" style="color:#fff;font-weight:700;padding:10px">TOTAL A COBRAR</td>
-    <td style="text-align:right;color:#fff;font-weight:700;padding:10px">${fmt(totalCompras+(c.deuda||0))}</td>
-  </tr>
 </table>
-
-<div class="footer">
-  <span>Tienda Candela — Comprobante generado el ${fechaHoy}</span>
-  <span>${c.deuda>0?'Deuda pendiente incluida: '+fmt(c.deuda):'Sin deuda pendiente'}</span>
+<div class="total-section">
+  <div class="total-row"><span>Subtotal compras</span><span>${fmt(totalExport)}</span></div>
+  ${pdfTab==='fiado'&&c.deuda>0?`<div class="total-row deuda"><span>+ Deuda pendiente anterior</span><span>${fmt(c.deuda)}</span></div>`:''}
+  <div class="total-row final"><span>TOTAL A COBRAR</span><span>${fmt(totalACobrar)}</span></div>
 </div>
 </body>
 </html>`;
