@@ -591,17 +591,17 @@ async function supaGet(tabla){
 }
 
 async function supaUpsert(tabla,items){
-  if(!items.length){
-    // Delete all rows
-    await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=neq.NONE`,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'}});
-    return;
-  }
-  const rows=items.map(item=>({id:item.id||tabla+'_main',data:item}));
-  await fetch(`${SUPA_URL}/rest/v1/${tabla}`,{
+  const headers={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};
+  // Borrar todo y reinsertar (sync completo)
+  await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=neq.___none___`,{method:'DELETE',headers});
+  if(!items.length) return;
+  const rows=items.map(item=>({id:item.id||uid(),data:item}));
+  const r=await fetch(`${SUPA_URL}/rest/v1/${tabla}`,{
     method:'POST',
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+    headers:{...headers,'Prefer':'return=minimal'},
     body:JSON.stringify(rows)
   });
+  if(!r.ok){const t=await r.text();console.error('Supabase upsert error',tabla,r.status,t);}
 }
 
 async function supaDelete(tabla,id){
@@ -1048,7 +1048,7 @@ function renderCatEditor(){
     db.categorias.map((c,i)=>`
       <div class="cat-edit-row">
         <input class="cat-edit-name" value="${c.k}" onchange="db.categorias[${i}].k=this.value;save()">
-        <button class="btn sm danger" onclick="eliminarCategoria(${i})">Eliminar</button>
+        <button onclick="eliminarCategoria(${i})" style="background:none;border:none;cursor:pointer;font-size:20px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
       </div>`).join('');
 }
 function eliminarCategoria(i){
@@ -1289,7 +1289,7 @@ function renderInventario(){
       <td>${fmt(p.precio)}</td>
       <td style="white-space:nowrap">
         <button class="btn sm" onclick="editarProducto('${p.id}')">Editar</button>
-        <button class="btn sm danger" onclick="eliminarProducto('${p.id}')">Eliminar</button>
+        <button onclick="eliminarProducto('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:20px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
       </td>
     </tr>`).join('');
 }
@@ -1335,11 +1335,11 @@ function renderClientes(){
             <button class="btn" style="background:#2e7d32;color:#fff;border-color:#2e7d32" onclick="pagarTotal('${c.id}')">Cobrar todo</button>
             <button class="btn" style="background:#1565C0;color:#fff;border-color:#1565C0" onclick="abrirPagoFiado('${c.id}',${c.deuda})">Pago parcial</button>
             <button class="btn" style="background:#1A1A1A;color:#fff;border-color:#1A1A1A" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
-            <button class="btn" style="background:#D32F2F;color:#fff;border-color:#D32F2F" onclick="eliminarCliente('${c.id}')">Eliminar</button>
+            <button onclick="eliminarCliente('${c.id}')" style="background:none;border:none;cursor:pointer;font-size:22px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
           </div>`:`
           <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
             <button class="btn" style="background:#1A1A1A;color:#fff;border-color:#1A1A1A" onclick="exportarComprobante('${c.id}')">Exportar PDF</button>
-            <button class="btn" style="background:#D32F2F;color:#fff;border-color:#D32F2F" onclick="eliminarCliente('${c.id}')">Eliminar</button>
+            <button onclick="eliminarCliente('${c.id}')" style="background:none;border:none;cursor:pointer;font-size:22px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
           </div>`}
 
           <!-- Historial de compras -->
@@ -1382,7 +1382,7 @@ function renderClientes(){
               <span style="color:#fff">${pg.fecha}${pg.nota?' · '+pg.nota:''}</span>
               <div style="display:flex;align-items:center;gap:8px">
                 <span style="font-weight:600;color:#fff">${fmt(pg.monto)}</span>
-                <button class="btn sm danger" onclick="deshacerPago('${c.id}','${pg.id||''}')">Eliminar</button>
+                <button onclick="deshacerPago('${c.id}','${pg.id||''}'})" style="background:none;border:none;cursor:pointer;font-size:20px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button>
               </div>
             </div>`).join('')}`:''}
         </div>
@@ -1402,7 +1402,7 @@ function renderGastos(){
   tb.innerHTML=db.gastos.slice().sort((a,b)=>b.ts-a.ts).map(g=>`
     <tr>
       <td>${g.desc}</td><td>${g.cat}</td><td>${g.fecha}</td><td>${fmt(g.monto)}</td>
-      <td><button class="btn sm danger" onclick="eliminarGasto('${g.id}')">Eliminar</button></td>
+      <td><button onclick="eliminarGasto('${g.id}')" style="background:none;border:none;cursor:pointer;font-size:20px;color:#D32F2F;padding:2px 6px;line-height:1" title="Eliminar">&times;</button></td>
     </tr>`).join('');
 }
 
