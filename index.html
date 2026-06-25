@@ -681,6 +681,7 @@ async function load(){
       db.gastos=gastos;
       if(cats.length)db.categorias=cats;
       localStorage.setItem(KEY,JSON.stringify(db));
+      migrarDeudaInicial();
       render();
     }
     hideSync();
@@ -1104,18 +1105,55 @@ function agregarCategoria(){
 ============================== */
 function guardarCliente(){
   const editId=document.getElementById('cli-edit-id').value;
-  const obj={
-    nombre:document.getElementById('cli-nombre').value.trim(),
-    tel:document.getElementById('cli-tel').value.trim(),
-    dir:document.getElementById('cli-dir').value.trim(),
-    loc:document.getElementById('cli-loc').value.trim(),
-    deuda:parseFloat(document.getElementById('cli-deuda').value)||0,
-    pagos:[],compras:[]
-  };
-  if(!obj.nombre){alert('Ingresa el nombre del cliente.');return;}
-  if(editId){const c=db.clientes.find(x=>x.id===editId);if(c){obj.pagos=c.pagos||[];obj.compras=c.compras||[];Object.assign(c,obj);}}
-  else{obj.id=uid();db.clientes.push(obj);}
+  const nombre=document.getElementById('cli-nombre').value.trim();
+  const tel=document.getElementById('cli-tel').value.trim();
+  const dir=document.getElementById('cli-dir').value.trim();
+  const loc=document.getElementById('cli-loc').value.trim();
+  const deudaInicial=parseFloat(document.getElementById('cli-deuda').value)||0;
+  if(!nombre){alert('Ingresa el nombre del cliente.');return;}
+
+  if(editId){
+    const c=db.clientes.find(x=>x.id===editId);
+    if(c){c.nombre=nombre;c.tel=tel;c.dir=dir;c.loc=loc;}
+  } else {
+    const obj={id:uid(),nombre,tel,dir,loc,deuda:deudaInicial,pagos:[],compras:[]};
+    // Si tiene deuda inicial, registrarla como compra "A cuenta"
+    if(deudaInicial>0){
+      obj.compras.push({
+        id:uid(),fecha:hoy(),
+        detalle:'Deuda inicial',
+        total:deudaInicial,
+        tipo:'Fiado'
+      });
+    }
+    db.clientes.push(obj);
+  }
   save();render();closeModal('cliente');
+}
+
+// Migrar clientes existentes que tengan deuda inicial sin compra asociada
+function migrarDeudaInicial(){
+  let migrados=0;
+  db.clientes.forEach(c=>{
+    if(c.deuda>0){
+      const yaHayDeudaInicial=(c.compras||[]).some(co=>co.detalle==='Deuda inicial');
+      const totalComprasCuenta=(c.compras||[]).filter(co=>co.tipo==='Fiado'||co.tipo==='A cuenta').reduce((s,x)=>s+x.total,0);
+      const totalPagado=(c.pagos||[]).reduce((s,p)=>s+p.monto,0);
+      const saldoCalculado=totalComprasCuenta-totalPagado;
+      // Si la deuda no coincide con lo calculado y no hay deuda inicial registrada
+      if(!yaHayDeudaInicial && Math.abs(saldoCalculado-c.deuda)>1){
+        if(!c.compras)c.compras=[];
+        c.compras.unshift({
+          id:uid(),fecha:hoy(),
+          detalle:'Deuda inicial',
+          total:c.deuda,
+          tipo:'Fiado'
+        });
+        migrados++;
+      }
+    }
+  });
+  if(migrados>0){save();render();console.log(`Migrados ${migrados} clientes con deuda inicial`);}
 }
 function eliminarCliente(cid){
   if(!confirm('Eliminar este cliente?'))return;
