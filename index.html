@@ -543,7 +543,7 @@ function checkSession(){
   const ok=localStorage.getItem(SESSION_KEY)==='1';
   document.getElementById('login-screen').style.display=ok?'none':'flex';
   document.getElementById('main-app').style.display=ok?'block':'none';
-  if(ok){load();render();}
+  if(ok){load();}
 }
 
 function intentarLogin(){
@@ -555,7 +555,7 @@ function intentarLogin(){
     err.style.display='none';
     document.getElementById('login-screen').style.display='none';
     document.getElementById('main-app').style.display='block';
-    load();render();
+    load();
   } else {
     err.style.display='block';
     document.getElementById('login-pass').value='';
@@ -580,15 +580,99 @@ const TALLE_GRUPOS = [
   {label:'Unico',talles:['Unico']}
 ];
 
-function load(){
+const SUPA_URL='https://mnhhkiukhwadtladjftj.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uaGhraXVraHdhZHRsYWRqZnRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNDA5NDMsImV4cCI6MjA5NzkxNjk0M30.CwMrGj_B20tVUjlqRy2uW-K8OGEpqDu0pbcQlmu63oY';
+
+async function supaGet(tabla){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${tabla}?select=id,data`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+  if(!r.ok)return[];
+  const rows=await r.json();
+  return rows.map(x=>x.data);
+}
+
+async function supaUpsert(tabla,items){
+  if(!items.length){
+    // Delete all rows
+    await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=neq.NONE`,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'}});
+    return;
+  }
+  const rows=items.map(item=>({id:item.id||tabla+'_main',data:item}));
+  await fetch(`${SUPA_URL}/rest/v1/${tabla}`,{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify(rows)
+  });
+}
+
+async function supaDelete(tabla,id){
+  await fetch(`${SUPA_URL}/rest/v1/${tabla}?id=eq.${encodeURIComponent(id)}`,{
+    method:'DELETE',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  });
+}
+
+async function supaDeleteAll(tabla){
+  await fetch(`${SUPA_URL}/rest/v1/${tabla}`,{
+    method:'DELETE',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'},
+    body:'{}' 
+  });
+}
+
+// Mostrar/ocultar indicador de sincronización
+function showSync(msg){
+  let el=document.getElementById('sync-indicator');
+  if(!el){el=document.createElement('div');el.id='sync-indicator';el.style.cssText='position:fixed;bottom:16px;right:16px;background:#1A1A1A;color:#fff;font-size:12px;font-family:Poppins,sans-serif;padding:8px 14px;border-radius:20px;z-index:999;opacity:0.9';document.body.appendChild(el);}
+  el.textContent=msg;el.style.display='block';
+}
+function hideSync(){const el=document.getElementById('sync-indicator');if(el)el.style.display='none';}
+
+async function load(){
+  // Primero cargamos desde localStorage como fallback rápido
   try{const s=localStorage.getItem(KEY);if(s)db=JSON.parse(s);}catch(e){}
   if(!db.productos)db.productos=[];
   if(!db.ventas)db.ventas=[];
   if(!db.clientes)db.clientes=[];
   if(!db.gastos)db.gastos=[];
   if(!db.categorias||!db.categorias.length)db.categorias=JSON.parse(JSON.stringify(CATS_DEFAULT));
+  render();
+
+  // Luego sincronizamos desde Supabase
+  showSync('Sincronizando...');
+  try{
+    const [prods,ventas,clientes,gastos,cats]=await Promise.all([
+      supaGet('productos'),supaGet('ventas'),supaGet('clientes'),supaGet('gastos'),supaGet('categorias')
+    ]);
+    if(prods.length||ventas.length||clientes.length||gastos.length){
+      db.productos=prods;
+      db.ventas=ventas;
+      db.clientes=clientes;
+      db.gastos=gastos;
+      if(cats.length)db.categorias=cats;
+      localStorage.setItem(KEY,JSON.stringify(db));
+      render();
+    }
+    hideSync();
+  }catch(e){console.error('Supabase load error:',e);hideSync();}
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){}}
+
+async function save(){
+  // Guardar localmente primero (rápido)
+  try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){}
+  // Luego sincronizar a Supabase en background
+  showSync('Guardando...');
+  try{
+    await Promise.all([
+      supaUpsert('productos',db.productos),
+      supaUpsert('ventas',db.ventas),
+      supaUpsert('clientes',db.clientes),
+      supaUpsert('gastos',db.gastos),
+      supaUpsert('categorias',db.categorias)
+    ]);
+    showSync('✓ Guardado');
+    setTimeout(hideSync,1500);
+  }catch(e){console.error('Supabase save error:',e);showSync('⚠ Sin conexión');setTimeout(hideSync,2500);}
+}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
 function hoy(){return new Date().toLocaleDateString('es-AR')}
 function mes(){const d=new Date();return d.getMonth()+'-'+d.getFullYear()}
