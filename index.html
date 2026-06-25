@@ -1502,51 +1502,23 @@ function exportarComprobante(cid){
   setPdfTab('fiado');
 
   const compras=c.compras||[];
-  const pagos=c.pagos||[];
 
-  // Calcular cuánto fue pagado en total
-  const totalPagado=pagos.reduce((s,p)=>s+p.monto,0);
-
-  // Obtener compras a cuenta ordenadas de más vieja a más nueva
-  const cuentaOrdenadas=compras
-    .filter(co=>co.tipo==='Fiado'||co.tipo==='A cuenta')
-    .slice() // no mutar original
-    .sort((a,b)=>{
-      // ordenar por fecha (d/m/yyyy)
-      const pa=a.fecha.split('/'),pb=b.fecha.split('/');
-      const da=new Date(pa[2],pa[1]-1,pa[0]),db2=new Date(pb[2],pb[1]-1,pb[0]);
-      return da-db2;
-    });
-
-  // Aplicar pagos de más viejo a más nuevo
-  let restante=totalPagado;
-  const conEstado=cuentaOrdenadas.map(co=>{
-    if(restante<=0) return {...co,saldo:co.total,pagada:false};
-    if(restante>=co.total){restante-=co.total;return {...co,saldo:0,pagada:true};}
-    const saldo=co.total-restante;restante=0;
-    return {...co,saldo,pagada:false,parcial:true};
-  });
-
-  // Solo mostrar las no completamente pagadas
-  const sinPagar=conEstado.filter(co=>!co.pagada);
-
+  // Mostrar todas las compras a cuenta con checkboxes
   const fiadoLista=document.getElementById('pdf-fiado-lista');
-  if(!sinPagar.length){
-    fiadoLista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">No hay compras a cuenta pendientes de cobro.</div>';
+  const cuentaCompras=compras.filter(co=>co.tipo==='Fiado'||co.tipo==='A cuenta');
+  if(!cuentaCompras.length){
+    fiadoLista.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px">Sin compras a cuenta registradas.</div>';
   } else {
-    fiadoLista.innerHTML=sinPagar.map(co=>{
-      const realIdx=compras.indexOf(compras.find(x=>x===co||x.id===co.id));
+    fiadoLista.innerHTML=cuentaCompras.slice().reverse().map(co=>{
+      const realIdx=compras.indexOf(co);
       const matchTalle=co.detalle.match(/\(([^)]+)\)/);
       const talle=matchTalle?matchTalle[1].toUpperCase():'';
       const nombre=co.detalle.replace(/\s*\([^)]*\)\s*/g,'').replace(/\s*x\d+$/,'').trim();
-      const montoPendiente=co.saldo||co.total;
-      const esParcial=co.parcial;
       return `<label style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:13px">
-        <input type="checkbox" data-idx="${compras.indexOf(compras.find(x=>x.id===co.id||x===co))}" data-monto="${montoPendiente}" checked style="width:16px;height:16px;accent-color:#1A1A1A">
+        <input type="checkbox" data-idx="${realIdx}" checked style="width:16px;height:16px;accent-color:#1A1A1A">
         <span>
           <strong>${nombre}${talle?' ('+talle+')':''}</strong>
-          ${esParcial?'<span style="font-size:11px;color:#E65100;margin-left:4px">(pago parcial)</span>':''}
-          <span style="color:#888;display:block;font-size:12px">${co.fecha} · Pendiente: ${fmt(montoPendiente)}</span>
+          <span style="color:#888;display:block;font-size:12px">${co.fecha} · ${fmt(co.total)}</span>
         </span>
       </label>`;
     }).join('');
@@ -1575,15 +1547,10 @@ function generarPDF(){
   let tituloSeccion='';
 
   if(pdfTab==='fiado'){
-    // Compras a cuenta seleccionadas via checkbox — usar monto pendiente real
     const checks=document.querySelectorAll('#pdf-fiado-lista input[type=checkbox]:checked');
     checks.forEach(ch=>{
       const idx=parseInt(ch.getAttribute('data-idx'));
-      const montoPendiente=parseFloat(ch.getAttribute('data-monto'));
-      if(compras[idx]){
-        const co={...compras[idx],total:montoPendiente};
-        paraExportar.push(co);
-      }
+      if(compras[idx]) paraExportar.push(compras[idx]);
     });
     if(!paraExportar.length){alert('Seleccioná al menos una compra a cuenta.');return;}
     tituloSeccion='A cuenta';
@@ -1612,9 +1579,12 @@ function generarPDF(){
     return {producto,talle};
   }
 
-  // Total: solo la suma de las compras exportadas, sin doble conteo
   const totalExport=paraExportar.reduce((s,x)=>s+x.total,0);
-  const totalACobrar=totalExport;
+  // Calcular pagos recibidos del cliente
+  const pagosRecibidos=c.pagos||[];
+  const totalPagado=pagosRecibidos.reduce((s,p)=>s+p.monto,0);
+  const saldoPendiente=Math.max(0,totalExport-totalPagado);
+  const totalFinal=pdfTab==='fiado'?saldoPendiente:totalExport;
 
   const filas=paraExportar.length
     ? paraExportar.map(co=>{
@@ -1685,8 +1655,9 @@ function generarPDF(){
   <tbody>${filas}</tbody>
 </table>
 <div class="total-section">
-  <div class="total-row"><span>Subtotal</span><span>${fmt(totalExport)}</span></div>
-  <div class="total-row final"><span>TOTAL A COBRAR</span><span>${fmt(totalACobrar)}</span></div>
+  <div class="total-row"><span>Total compras a cuenta</span><span>${fmt(totalExport)}</span></div>
+  ${pdfTab==='fiado'&&totalPagado>0?`<div class="total-row deuda"><span>- Pagos recibidos</span><span>- ${fmt(totalPagado)}</span></div>`:''}
+  <div class="total-row final"><span>SALDO A COBRAR</span><span>${fmt(totalFinal)}</span></div>
 </div>
 </body>
 </html>`;
